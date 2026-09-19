@@ -76,3 +76,7 @@ so this refinement applies equally to CLI and gateway.
 Two of four rows are solidly confirmed parity; one is a confirmed *difference*; one needs a further
 read. This audit narrows the original open question — it doesn't fully close it. See
 [`../known_unknowns.md`](../known_unknowns.md) for how this updates that list.
+
+> **Update (round 2):** the interrupted-turn row's difference is now fully confirmed, with the
+> concrete consequence traced through — see
+> [`gateway_interrupted_turn_gap.md`](gateway_interrupted_turn_gap.md).

@@ -66,7 +66,7 @@ Candidates informed by what round 1 actually turned up — particularly the two 
    this subsystem that were inferred, not directly read from its own source. Settling this first
    makes the others more precise. — Status: ✅ [`docs/rollouts/background_review_subsystem_deep_dive.md`](rollouts/background_review_subsystem_deep_dive.md) — **found and fixed a real error**: `API_socket_connectors.md` (round 0) had the cancellation roles backwards; the background review's own turn gets cancelled by the next live turn, never the reverse. Correction note added to that doc.
 2. **Selected: `gateway_interrupted_turn_gap`.** Reason: directly closes a named, real gap from
-   round 1 rather than opening a new one — highest-priority unfinished thread. — Status: ⬜
+   round 1 rather than opening a new one — highest-priority unfinished thread. — Status: ✅ [`docs/rollouts/gateway_interrupted_turn_gap.md`](rollouts/gateway_interrupted_turn_gap.md) — **confirmed**: the gateway hook judges partial output from interrupted turns; the CLI never does.
 3. **Selected: `deferral_rate_baseline_methodology`.** Reason: independent of the other four,
    and generalizes round 1's protocol work into something reusable rather than one-off. — Status: ⬜
 4. **Selected: `kanban_goal_mode_worker_session_audit`.** Reason: same shape as round 1's CLI/

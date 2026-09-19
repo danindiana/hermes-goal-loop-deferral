@@ -1,0 +1,32 @@
+digraph gateway_interrupted_turn_gap {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Confirmed gap: gateway judges partial output from interrupted turns; CLI never does"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.22,0.16",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    subgraph cluster_cli {
+        label="CLI path"; style="rounded"; color="#3fb950"; fontcolor="#3fb950";
+        c1 [label="Turn interrupted", color="#3fb950", fillcolor="#12351f"];
+        c2 [label="_last_turn_interrupted\nchecked FIRST, explicitly", color="#3fb950", fillcolor="#12351f"];
+        c3 [label="Auto-pause.\nJudge never called,\nregardless of partial text.", color="#3fb950", fillcolor="#12351f"];
+        c1 -> c2 -> c3;
+    }
+
+    subgraph cluster_gw {
+        label="Gateway path"; style="rounded"; color="#f85149"; fontcolor="#f85149";
+        g1 [label="Turn interrupted,\napi_calls > 0\n(did some work)", color="#f85149", fillcolor="#3b0d0d"];
+        g2 [label="agent_result[\"interrupted\"]=True\nbut final_response may be\nnon-empty partial text", color="#f85149", fillcolor="#3b0d0d"];
+        g3 [label="_final_text_for_post_turn_hooks()\nreads final_response directly —\nno check of the interrupted flag", color="#f85149", fillcolor="#3b0d0d"];
+        g4 [label="final_text.strip() is non-empty\n→ goal-continuation hook runs", color="#f85149", fillcolor="#3b0d0d"];
+        g5 [label="Judge is called on\nPARTIAL, interrupted output\nas if it were a finished turn", shape=diamond, color="#f85149", fillcolor="#3b0d0d", penwidth=3];
+        g1 -> g2 -> g3 -> g4 -> g5;
+    }
+
+    note [label="Confirmed by reading:\ngateway/run.py (interrupted+api_calls>0\nstill returns partial `response`)\n+ gateway/run_goals.py\n_final_text_for_post_turn_hooks()\n+ gateway/run_inbound.py\n(_run_post_turn_hooks called\nunconditionally after every turn)", shape=note, color="#d29922", fillcolor="#1f2937"];
+    c3 -> note [style=invis];
+    g5 -> note [style=invis];
+}
