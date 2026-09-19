@@ -38,17 +38,24 @@ and lists the open questions the current evidence can't settle.
 - **Exact live VRAM headroom during a long goal loop.** The theory that a VRAM-tuned model tag
   leaves less slack under sustained long-context load is plausible but wasn't confirmed against
   live `nvidia-smi`/`ollama ps` output captured *during* an active long-running goal session.
-- **Whether the gateway code path shares the same four deferral gaps as the CLI path.** The
-  gateway's post-turn hook implements a very similar shape (empty-response skip, similar
-  fail-open semantics) but wasn't traced line-by-line against the CLI hook to confirm the nudge
-  and interruption-supersession behavior matches exactly.
+- ~~**Whether the gateway code path shares the same four deferral gaps as the CLI path.**~~
+  **Closed** by the [rollouts](ROLLOUTS.md) process — see
+  [`rollouts/cli_gateway_hook_parity_audit.md`](rollouts/cli_gateway_hook_parity_audit.md) and its
+  two follow-ups. Short answer: two rows share mechanism, one is a confirmed real difference
+  (gateway judges partial output from interrupted turns), one achieves the same guarantee by a
+  different mechanism (FIFO ordering vs. a pre-emptive skip).
 - **Whether a non-VRAM-tuned variant of the same base model would show a meaningfully lower
   interruption rate on the identical workload.** No side-by-side comparison was run; this is a
-  hypothesis, not a result.
+  hypothesis, not a result. A runnable protocol for testing it now exists:
+  [`rollouts/vram_tag_comparison_protocol.md`](rollouts/vram_tag_comparison_protocol.md).
 - **Whether other, less-frequently-loaded models would show the same pattern under equivalent
   sustained load.** The comparison in the README is a count over *observed* usage, not a
   controlled experiment — a rarely-loaded model with a low raw count could still have a high rate
   if it were used as heavily as the dominant one.
+- **Whether heartbeat's idle-poll can collide with an in-flight goal judge call.** Plausible on
+  timing grounds (a 5-second poll against a 10–40 second synchronous judge call) but not confirmed
+  by tracing the relevant session-busy flags — see
+  [`rollouts/heartbeat_collision_check.md`](rollouts/heartbeat_collision_check.md).
 
 ## Why this matters
 

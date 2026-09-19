@@ -108,7 +108,7 @@ next steps once two of three surfaces (CLI, gateway) and Kanban are now characte
    dependency the design spec was written without. — Status: ✅ [`docs/rollouts/nudge_interval_source_reading.md`](rollouts/nudge_interval_source_reading.md) — found the skill and memory nudges count different units entirely (tool iterations vs. turns), explaining why the skill nudge was the one seen colliding.
 3. **Selected: `heartbeat_collision_check`.** Reason: independent of the other four, and the
    most natural remaining "does this other mechanism collide too" question left after nudges and
-   Kanban have both been checked. — Status: ⬜
+   Kanban have both been checked. — Status: ✅ [`docs/rollouts/heartbeat_collision_check.md`](rollouts/heartbeat_collision_check.md) — heartbeat has an explicit busy-check (unlike nudges); one plausible timing-based gap flagged, not confirmed.
 4. **Selected: `rollouts_process_retrospective`.** Reason: two full rounds is enough material for
    an honest retrospective on the process itself, and it's a good anchor before round 3's other,
    more technical items. — Status: ⬜

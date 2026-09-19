@@ -1,0 +1,25 @@
+digraph heartbeat_collision_check {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Heartbeat: an explicit busy-check, plus one plausible narrow gap"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.22,0.16",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    poll [label="Heartbeat poller ticks\nevery POLL_SECONDS = 5s", color="#58a6ff", fillcolor="#13294d"];
+    check [label="Checks: is session running?\nOR queue depth > 0?", shape=diamond, color="#d29922", fillcolor="#1f2937"];
+    skip [label="Busy → skip this tick,\ninterval stays due,\nretried next poll", color="#3fb950", fillcolor="#12351f"];
+    fire [label="Idle → fire the\nheartbeat prompt", color="#39c5cf", fillcolor="#0d2e2e"];
+
+    poll -> check;
+    check -> skip [label="yes (busy)", color="#3fb950"];
+    check -> fire [label="no (idle)", color="#f0883e"];
+
+    gap [label="Plausible narrow gap (NOT confirmed\nby tracing lock semantics):\nbetween a goal turn ending and its\ncontinuation being enqueued, the\nSYNCHRONOUS judge call itself\nruns 10–40s — during which the\nsession may read as idle", shape=note, color="#f85149", fillcolor="#3b0d0d", fontcolor="#f85149"];
+    fire -> gap [style=dashed];
+
+    caveat [label="Unlike nudges (fire into a busy\nsession, then get cancelled),\nheartbeat's busy-check runs BEFORE\nfiring — the failure mode, if real,\nis narrower and window-dependent,\nnot structural like the nudge race", shape=note, color="#d29922", fillcolor="#1f2937"];
+    gap -> caveat [style=invis];
+}
