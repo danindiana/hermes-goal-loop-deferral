@@ -114,4 +114,25 @@ next steps once two of three surfaces (CLI, gateway) and Kanban are now characte
    more technical items. — Status: ✅ [`docs/rollouts/rollouts_process_retrospective.md`](rollouts/rollouts_process_retrospective.md) — found a pattern: every audit reading genuinely new source found an error or gap; every pure design spec stayed consistent with nothing to correct.
 5. **Selected: `contract_drafting_prompt_review`.** Reason: last by elimination; narrowest scope
    of the five and most directly a follow-up to a single round 2 rollout rather than a broader
-   thread. — Status: ⬜
+   thread. — Status: ✅ [`docs/rollouts/contract_drafting_prompt_review.md`](rollouts/contract_drafting_prompt_review.md) — reads the actual drafting prompt; shows structurally why no contract field can catch a wrong verification command.
+
+**Round 3 complete: 5/5 (15/15 overall). The rollouts process is complete.**
+
+## Summary across all 3 rounds
+
+- **15/15 rollouts completed.** Every candidate proposed across all three rounds was eventually
+  selected and finished — no candidate was dropped.
+- **2 real errors found and fixed** in earlier docs (`API_socket_connectors.md`,
+  `meta_loop_integrations.md`), both via source-grounded audits in round 2.
+- **4 of 4 rows** in the CLI/gateway parity question (open at the start of round 1) are now fully
+  characterized, closed across rollouts in rounds 1, 2, and 3.
+- **1 process-level finding**, from [`rollouts_process_retrospective.md`](rollouts/rollouts_process_retrospective.md):
+  every rollout that read genuinely new source material found something to correct or confirm;
+  every pure design spec stayed internally consistent with nothing to fix.
+- **5 concrete, unimplemented proposals** remain available for future work: the telemetry spec,
+  the nudge scheduler design, the VRAM comparison protocol, the deferral-rate methodology, and the
+  status counter mockup — see [`future_directions.md`](future_directions.md) for how these
+  relate to that doc's original roadmap.
+
+See the full ledger above for every candidate, every pick's reasoning, and links to all fifteen
+finished pieces.

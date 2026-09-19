@@ -1,0 +1,23 @@
+digraph contract_drafting_prompt_review {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="What the draft model is actually asked — and what it can't see"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.22,0.16",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    obj [label="/goal draft <objective text>", color="#58a6ff", fillcolor="#13294d"];
+    trunc [label="Truncated to 4000 chars,\nsent as the ONLY input —\nno file reads, no tool calls,\nno project context beyond\nwhat the text implies", color="#d29922", fillcolor="#1f2937"];
+    prompt [label="DRAFT_CONTRACT_SYSTEM_PROMPT:\n\"infer sensible, specific values...\nprefer concrete verification...\nover vague phrases\"", color="#39c5cf", fillcolor="#0d2e2e"];
+    sameclient [label="Same goal_judge auxiliary\nmodel/client that later\nJUDGES against this contract", color="#bc8cff", fillcolor="#241a3d"];
+
+    obj -> trunc -> prompt -> sameclient;
+
+    risk [label="Risk this surfaces:\na drafted \"verification\" command\n(e.g. a named test file) can be\nplausible-sounding but WRONG —\nthe draft model has no way to\nconfirm it actually exists", shape=diamond, color="#f85149", fillcolor="#3b0d0d", fontcolor="#f85149", penwidth=3];
+    sameclient -> risk;
+
+    link [label="Extends completion_contract_\neffectiveness_review's finding:\nno field protects against a WRONG\nverification command — this shows\nWHY that gap exists structurally:\nthe draft step can't check its\nown proposal against reality", shape=note, color="#f0883e", fillcolor="#161b22"];
+    risk -> link [style=dashed];
+}

@@ -7,7 +7,7 @@
   <img alt="platform" src="https://img.shields.io/badge/platform-Linux-informational">
   <img alt="made-with-hermes" src="https://img.shields.io/badge/made%20with-Hermes%20Agent-8b5cf6">
   <img alt="made-with-ollama" src="https://img.shields.io/badge/made%20with-Ollama-000000">
-  <img alt="diagrams" src="https://img.shields.io/badge/diagrams-29%20%C3%97%202%20formats-orange">
+  <img alt="diagrams" src="https://img.shields.io/badge/diagrams-30%20%C3%97%202%20formats-orange">
   <img alt="rendered-with" src="https://img.shields.io/badge/rendered%20with-Graphviz-2e8b57">
   <a href="https://github.com/danindiana/hermes-goal-loop-deferral/actions/workflows/verify-diagrams.yml"><img alt="CI" src="https://github.com/danindiana/hermes-goal-loop-deferral/actions/workflows/verify-diagrams.yml/badge.svg"></a>
   <img alt="last-commit" src="https://img.shields.io/github/last-commit/danindiana/hermes-goal-loop-deferral">
@@ -172,6 +172,21 @@ Not applied here — documented as concrete next steps:
 | 13 | [`glossary`](diagrams/13_glossary.svg) | Core terms and how they relate |
 | 14 | [`threat_model`](diagrams/14_threat_model.svg) | Likelihood × impact matrix for the known failure modes |
 | 15 | [`faq`](diagrams/15_faq.svg) | Wayfinding map from common questions to the doc that answers them |
+| 16 | [`deferral_telemetry_spec`](diagrams/16_deferral_telemetry_spec.svg) | Proposed log line at each of the four deferral points |
+| 17 | [`cli_gateway_hook_parity_audit`](diagrams/17_cli_gateway_hook_parity_audit.svg) | CLI vs. gateway hook: shared, differs, and unconfirmed |
+| 18 | [`vram_tag_comparison_protocol`](diagrams/18_vram_tag_comparison_protocol.svg) | Experiment protocol: VRAM-tuned tag vs. plain tag |
+| 19 | [`goal_aware_nudge_scheduler_design`](diagrams/19_goal_aware_nudge_scheduler_design.svg) | Proposed nudge scheduler state machine |
+| 20 | [`goal_status_deferral_counter_mockup`](diagrams/20_goal_status_deferral_counter_mockup.svg) | Before/after mockup of a `/goal status` deferral counter |
+| 21 | [`background_review_subsystem_deep_dive`](diagrams/21_background_review_subsystem_deep_dive.svg) | Corrected mechanism: the nudge gets cancelled, not the goal turn |
+| 22 | [`gateway_interrupted_turn_gap`](diagrams/22_gateway_interrupted_turn_gap.svg) | Confirmed: gateway judges partial output from interrupted turns |
+| 23 | [`deferral_rate_baseline_methodology`](diagrams/23_deferral_rate_baseline_methodology.svg) | A reusable rate-based comparison methodology |
+| 24 | [`kanban_goal_mode_worker_session_audit`](diagrams/24_kanban_goal_mode_worker_session_audit.svg) | Corrected: Kanban goal-mode judges at handoff, not per turn |
+| 25 | [`completion_contract_effectiveness_review`](diagrams/25_completion_contract_effectiveness_review.svg) | Which contract fields address which false-done risk factor |
+| 26 | [`gateway_queued_message_check`](diagrams/26_gateway_queued_message_check.svg) | Same guarantee, different mechanism: queued real user message |
+| 27 | [`nudge_interval_source_reading`](diagrams/27_nudge_interval_source_reading.svg) | Skill nudge counts iterations; memory nudge counts turns |
+| 28 | [`heartbeat_collision_check`](diagrams/28_heartbeat_collision_check.svg) | Heartbeat's explicit busy-check, and one plausible narrow gap |
+| 29 | [`rollouts_process_retrospective`](diagrams/29_rollouts_process_retrospective.svg) | Tally of 15 rollouts by kind: audits, corrections, design specs |
+| 30 | [`contract_drafting_prompt_review`](diagrams/30_contract_drafting_prompt_review.svg) | What the contract-drafting model is asked, and what it can't see |
 
 Each diagram ships as `.dot` (source), `.png`, and `.svg`. Re-render any of them with:
 
@@ -204,10 +219,13 @@ diagram (05–15 in the table above continue from these, in the same order):
 
 ## Rollouts
 
-Follow-up work beyond the core diagnosis is tracked as an explicit, auditable exploration process
-in [`docs/ROLLOUTS.md`](docs/ROLLOUTS.md) — candidates proposed per round, why each one was
-picked, and a link to the finished doc+diagram once complete. In progress; see that file for the
-current state.
+Follow-up work beyond the core diagnosis was tracked as an explicit, auditable, MCTS-style
+exploration process in [`docs/ROLLOUTS.md`](docs/ROLLOUTS.md): 3 rounds of 5 candidates each,
+one picked and completed at a time, informed by what the prior round actually found. **Complete:
+15/15 rollouts**, including 2 real corrections to earlier docs in this repo, found by rollouts
+that audited source code the original diagnosis hadn't read. See that ledger for every candidate,
+every pick's reasoning, and links to all fifteen finished pieces in
+[`docs/rollouts/`](docs/rollouts/).
 
 ## Repo structure
 
@@ -230,8 +248,24 @@ current state.
 │   ├── 12_api_socket_connectors.{dot,png,svg}
 │   ├── 13_glossary.{dot,png,svg}
 │   ├── 14_threat_model.{dot,png,svg}
-│   └── 15_faq.{dot,png,svg}
+│   ├── 15_faq.{dot,png,svg}
+│   ├── 16_deferral_telemetry_spec.{dot,png,svg}
+│   ├── 17_cli_gateway_hook_parity_audit.{dot,png,svg}
+│   ├── 18_vram_tag_comparison_protocol.{dot,png,svg}
+│   ├── 19_goal_aware_nudge_scheduler_design.{dot,png,svg}
+│   ├── 20_goal_status_deferral_counter_mockup.{dot,png,svg}
+│   ├── 21_background_review_subsystem_deep_dive.{dot,png,svg}
+│   ├── 22_gateway_interrupted_turn_gap.{dot,png,svg}
+│   ├── 23_deferral_rate_baseline_methodology.{dot,png,svg}
+│   ├── 24_kanban_goal_mode_worker_session_audit.{dot,png,svg}
+│   ├── 25_completion_contract_effectiveness_review.{dot,png,svg}
+│   ├── 26_gateway_queued_message_check.{dot,png,svg}
+│   ├── 27_nudge_interval_source_reading.{dot,png,svg}
+│   ├── 28_heartbeat_collision_check.{dot,png,svg}
+│   ├── 29_rollouts_process_retrospective.{dot,png,svg}
+│   └── 30_contract_drafting_prompt_review.{dot,png,svg}
 ├── docs/
+│   ├── ROLLOUTS.md
 │   ├── catch22.md
 │   ├── howto.md
 │   ├── technical_rationale.md
@@ -242,7 +276,23 @@ current state.
 │   ├── API_socket_connectors.md
 │   ├── glossary.md
 │   ├── threat_model.md
-│   └── faq.md
+│   ├── faq.md
+│   └── rollouts/
+│       ├── deferral_telemetry_spec.md
+│       ├── cli_gateway_hook_parity_audit.md
+│       ├── vram_tag_comparison_protocol.md
+│       ├── goal_aware_nudge_scheduler_design.md
+│       ├── goal_status_deferral_counter_mockup.md
+│       ├── background_review_subsystem_deep_dive.md
+│       ├── gateway_interrupted_turn_gap.md
+│       ├── deferral_rate_baseline_methodology.md
+│       ├── kanban_goal_mode_worker_session_audit.md
+│       ├── completion_contract_effectiveness_review.md
+│       ├── gateway_queued_message_check.md
+│       ├── nudge_interval_source_reading.md
+│       ├── heartbeat_collision_check.md
+│       ├── rollouts_process_retrospective.md
+│       └── contract_drafting_prompt_review.md
 ├── .github/workflows/verify-diagrams.yml
 ├── LICENSE
 └── README.md

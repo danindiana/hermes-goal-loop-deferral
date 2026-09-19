@@ -41,6 +41,10 @@ contract's five fields actually target, and which don't get addressed at all?
 
 ## The gap no field addresses
 
+> **Follow-up (round 3):** [`contract_drafting_prompt_review.md`](contract_drafting_prompt_review.md)
+> reads the actual drafting prompt and shows structurally *why* this gap exists — the draft model
+> has no project access to confirm a proposed verification command is real.
+
 None of the five fields protect against a **wrong or gamed verification command** — if
 `verify: pytest tests/auth passes` is specified but the actual test suite doesn't cover the change
 being judged, or if the agent's evidence text simply *asserts* the command passed without the
