@@ -1,0 +1,48 @@
+digraph rollouts_process_retrospective {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="13 rollouts in: what kind of work actually got done"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.22,0.16",
+           fillcolor="#161b22"];
+    edge  [style=invis];
+
+    subgraph cluster_audits {
+        label="Source-grounded audits (6)"; style="rounded"; color="#3fb950"; fontcolor="#3fb950";
+        a1 [label="CLI/gateway parity\n(+2 follow-up closures)", color="#3fb950", fillcolor="#12351f"];
+        a2 [label="Background-review\ndeep dive", color="#3fb950", fillcolor="#12351f"];
+        a3 [label="Kanban goal-mode\naudit", color="#3fb950", fillcolor="#12351f"];
+        a4 [label="Nudge interval\nsource reading", color="#3fb950", fillcolor="#12351f"];
+        a5 [label="Heartbeat collision\ncheck", color="#3fb950", fillcolor="#12351f"];
+        a1 -> a2 -> a3 -> a4 -> a5 [style=invis];
+        {rank=same; a1; a2; a3; a4; a5;}
+    }
+
+    subgraph cluster_corrections {
+        label="Real errors found and fixed (2)"; style="rounded"; color="#f85149"; fontcolor="#f85149";
+        c1 [label="API_socket_connectors.md\nhad cancellation roles\nbackwards", color="#f85149", fillcolor="#3b0d0d"];
+        c2 [label="meta_loop_integrations.md\noverstated Kanban's\nshared machinery", color="#f85149", fillcolor="#3b0d0d"];
+        c1 -> c2 [style=invis];
+        {rank=same; c1; c2;}
+    }
+
+    subgraph cluster_specs {
+        label="Design specs / protocols (5)"; style="rounded"; color="#58a6ff"; fontcolor="#58a6ff";
+        s1 [label="Deferral telemetry\nspec", color="#58a6ff", fillcolor="#13294d"];
+        s2 [label="Nudge scheduler\ndesign", color="#58a6ff", fillcolor="#13294d"];
+        s3 [label="VRAM comparison\nprotocol", color="#58a6ff", fillcolor="#13294d"];
+        s4 [label="Deferral-rate\nmethodology", color="#58a6ff", fillcolor="#13294d"];
+        s5 [label="Status counter\nmockup", color="#58a6ff", fillcolor="#13294d"];
+        s1 -> s2 -> s3 -> s4 -> s5 [style=invis];
+        {rank=same; s1; s2; s3; s4; s5;}
+    }
+
+    subgraph cluster_review {
+        label="Design review (1)"; style="rounded"; color="#d29922"; fontcolor="#d29922";
+        r1 [label="Completion contract\neffectiveness review", color="#d29922", fillcolor="#1f2937"];
+    }
+
+    finding [label="Pattern: every audit that read NEW source\n(not re-reading round-0/round-1 material) found\nsomething the prior docs had wrong or incomplete.\nEvery pure design spec stayed internally\nconsistent — no corrections needed there.", shape=note, color="#bc8cff", fillcolor="#241a3d"];
+    a5 -> finding [style=invis];
+    r1 -> finding [style=invis];
+}

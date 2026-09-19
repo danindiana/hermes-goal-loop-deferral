@@ -111,7 +111,7 @@ next steps once two of three surfaces (CLI, gateway) and Kanban are now characte
    Kanban have both been checked. — Status: ✅ [`docs/rollouts/heartbeat_collision_check.md`](rollouts/heartbeat_collision_check.md) — heartbeat has an explicit busy-check (unlike nudges); one plausible timing-based gap flagged, not confirmed.
 4. **Selected: `rollouts_process_retrospective`.** Reason: two full rounds is enough material for
    an honest retrospective on the process itself, and it's a good anchor before round 3's other,
-   more technical items. — Status: ⬜
+   more technical items. — Status: ✅ [`docs/rollouts/rollouts_process_retrospective.md`](rollouts/rollouts_process_retrospective.md) — found a pattern: every audit reading genuinely new source found an error or gap; every pure design spec stayed consistent with nothing to correct.
 5. **Selected: `contract_drafting_prompt_review`.** Reason: last by elimination; narrowest scope
    of the five and most directly a follow-up to a single round 2 rollout rather than a broader
    thread. — Status: ⬜
