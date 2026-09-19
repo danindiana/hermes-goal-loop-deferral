@@ -80,3 +80,7 @@ read. This audit narrows the original open question — it doesn't fully close i
 > **Update (round 2):** the interrupted-turn row's difference is now fully confirmed, with the
 > concrete consequence traced through — see
 > [`gateway_interrupted_turn_gap.md`](gateway_interrupted_turn_gap.md).
+>
+> **Update (round 3):** the queued-user-message row is now closed too — see
+> [`gateway_queued_message_check.md`](gateway_queued_message_check.md). All four rows are now
+> fully characterized.

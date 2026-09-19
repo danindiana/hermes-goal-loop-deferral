@@ -1,0 +1,34 @@
+digraph gateway_queued_message_check {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Same goal, different mechanism: queued real user message"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.22,0.16",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    subgraph cluster_cli {
+        label="CLI"; style="rounded"; color="#3fb950"; fontcolor="#3fb950";
+        c1 [label="Turn completes", color="#3fb950", fillcolor="#12351f"];
+        c2 [label="PEEK pending-input queue\nfor a real (non-slash) message\nBEFORE judging", color="#3fb950", fillcolor="#12351f"];
+        c3 [label="Found → SKIP the judge\ncall entirely this turn", color="#3fb950", fillcolor="#12351f"];
+        c1 -> c2 -> c3;
+    }
+
+    subgraph cluster_gw {
+        label="Gateway"; style="rounded"; color="#39c5cf"; fontcolor="#39c5cf";
+        g1 [label="Turn completes\n(after delivery)", color="#39c5cf", fillcolor="#0d2e2e"];
+        g2 [label="Judge ALWAYS called —\nno pre-check of the\nadapter's queue", color="#39c5cf", fillcolor="#0d2e2e"];
+        g3 [label="On \"continue\": enqueue via\nthe adapter's own FIFO", color="#39c5cf", fillcolor="#0d2e2e"];
+        g4 [label="A real user message already\nin that FIFO is processed FIRST\n— ordering, not a skipped judge", color="#39c5cf", fillcolor="#0d2e2e"];
+        g1 -> g2 -> g3 -> g4;
+    }
+
+    same [label="Same outcome for the USER:\ntheir message is always\nhandled before a synthetic\ncontinuation prompt", shape=diamond, color="#d29922", fillcolor="#1f2937"];
+    c3 -> same [style=dashed, color="#8b949e"];
+    g4 -> same [style=dashed, color="#8b949e"];
+
+    diff [label="Different cost: the gateway\nspends a judge call even when\na real message was already\nqueued; the CLI never does", shape=note, color="#f0883e", fillcolor="#161b22"];
+    same -> diff [style=invis];
+}

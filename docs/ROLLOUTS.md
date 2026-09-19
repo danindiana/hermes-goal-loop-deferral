@@ -101,7 +101,7 @@ next steps once two of three surfaces (CLI, gateway) and Kanban are now characte
 1. **Selected: `gateway_queued_message_check`.** Reason: the single most concrete unfinished
    thread across both prior rounds — a named, specific gap with a clear yes/no answer available
    directly from source, same shape as the round 2 rollout that closed the interrupted-turn row.
-   — Status: ⬜
+   — Status: ✅ [`docs/rollouts/gateway_queued_message_check.md`](rollouts/gateway_queued_message_check.md) — closes the CLI/gateway parity table's last row: both surfaces achieve the same guarantee via genuinely different mechanisms.
 2. **Selected: `nudge_interval_source_reading`.** Reason: the deep dive in round 2 explicitly
    flagged this as unread and load-bearing for
    `goal_aware_nudge_scheduler_design` (round 1) actually being implementable — closes a
