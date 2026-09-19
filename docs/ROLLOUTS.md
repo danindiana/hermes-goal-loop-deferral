@@ -68,7 +68,7 @@ Candidates informed by what round 1 actually turned up — particularly the two 
 2. **Selected: `gateway_interrupted_turn_gap`.** Reason: directly closes a named, real gap from
    round 1 rather than opening a new one — highest-priority unfinished thread. — Status: ✅ [`docs/rollouts/gateway_interrupted_turn_gap.md`](rollouts/gateway_interrupted_turn_gap.md) — **confirmed**: the gateway hook judges partial output from interrupted turns; the CLI never does.
 3. **Selected: `deferral_rate_baseline_methodology`.** Reason: independent of the other four,
-   and generalizes round 1's protocol work into something reusable rather than one-off. — Status: ⬜
+   and generalizes round 1's protocol work into something reusable rather than one-off. — Status: ✅ [`docs/rollouts/deferral_rate_baseline_methodology.md`](rollouts/deferral_rate_baseline_methodology.md)
 4. **Selected: `kanban_goal_mode_worker_session_audit`.** Reason: same shape as round 1's CLI/
    gateway audit, applied to the third surface `../meta_loop_integrations.md` named but didn't
    check — natural continuation once two of three surfaces are covered. — Status: ⬜

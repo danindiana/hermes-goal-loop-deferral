@@ -1,0 +1,26 @@
+digraph deferral_rate_baseline_methodology {
+    graph [bgcolor="#0d1117", rankdir=LR, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="A reusable deferral-rate methodology (not just for the VRAM-tag comparison)"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.22,0.16",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    raw [label="Raw counts:\ninterrupted turns,\nreasoning-stalls,\nnudge collisions\n(grep agent.log)", color="#58a6ff", fillcolor="#13294d"];
+    vol [label="Output volume for\nthe same window:\ntotal completion tokens\nor total turns", color="#39c5cf", fillcolor="#0d2e2e"];
+    rate [label="Rate = raw count /\noutput volume\n(per 1000 tokens,\nor per 100 turns)", shape=diamond, color="#d29922", fillcolor="#1f2937"];
+
+    raw -> rate; vol -> rate;
+
+    compare [label="Now comparable across:\nany two models, any two\nconfig changes, any two\ntime windows — not just\nVRAM-tuned vs. plain tag", color="#3fb950", fillcolor="#12351f"];
+    rate -> compare;
+
+    pitfall [label="Pitfall this avoids:\na longer-running arm\naccumulates more RAW events\nregardless of underlying risk —\nthe original round-0 model\ncomparison used raw counts", shape=note, color="#f0883e", fillcolor="#161b22"];
+    compare -> pitfall [style=dashed];
+
+    reuse1 [label="Reused by:\nvram_tag_comparison_protocol\n(round 1)", color="#bc8cff", fillcolor="#241a3d"];
+    reuse2 [label="Reusable for:\nany future\nnudge-scheduler-fix\nbefore/after comparison", color="#bc8cff", fillcolor="#241a3d"];
+    compare -> reuse1; compare -> reuse2;
+}
