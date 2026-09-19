@@ -1,0 +1,27 @@
+digraph background_review_subsystem_deep_dive {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Corrected mechanism: the NUDGE gets cancelled, not the goal turn"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.22,0.16",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    t1 [label="1. Goal-continuation turn\ncompletes cleanly\n(finish_reason=stop)", color="#58a6ff", fillcolor="#13294d"];
+    fork [label="2. run_conversation() returns;\nHermes may spawn a daemon\nthread that FORKS the agent\nto run the skill/memory review", color="#d29922", fillcolor="#1f2937"];
+    inherit [label="3. The fork inherits the\nparent's live runtime —\nsame model, same cached\nsystem prompt (warm cache)", color="#d29922", fillcolor="#1f2937"];
+    running [label="4. Fork's review turn is\nnow generating against\nthe live model", color="#d29922", fillcolor="#1f2937"];
+
+    newturn [label="5. The NEXT live turn starts\n(e.g. the goal continuation\nprompt), calling\nrun_conversation() again", color="#58a6ff", fillcolor="#13294d"];
+    cancelcall [label="6. run_conversation()'s very\nFIRST action, unconditionally:\ncancel_background_review_for_live_turn()", shape=diamond, color="#f85149", fillcolor="#3b0d0d", fontcolor="#f85149", penwidth=3];
+    interrupt [label="7. Requests a hard interrupt on\nthe review fork, tagged\n\"superseded by a new live turn\"", color="#f0883e", fillcolor="#161b22"];
+    logline [label="8. The REVIEW's own turn ends:\nreason=interrupted_during_api_call\n(background_review_superseded)", color="#f0883e", fillcolor="#161b22"];
+    proceed [label="9. Foreground priority: after a\nbounded 2s wait for ack, the\nnew live turn proceeds regardless", color="#3fb950", fillcolor="#12351f"];
+
+    t1 -> fork -> inherit -> running;
+    running -> newturn [style=dashed];
+    newturn -> cancelcall -> interrupt -> logline;
+    logline -> proceed;
+    newturn -> proceed [style=invis];
+}

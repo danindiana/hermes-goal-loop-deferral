@@ -16,6 +16,14 @@ agent.chat_completion_helpers: Shut down the stale stream's socket to unblock th
 
 This doc is about what that line actually describes at the transport level.
 
+> **Correction (round 2):** the "Turn A vs. a second call" framing below has the roles backwards.
+> Reading the actual source in
+> [`rollouts/background_review_subsystem_deep_dive.md`](rollouts/background_review_subsystem_deep_dive.md)
+> shows it's the **background review's own turn** that gets cancelled whenever the next live turn
+> starts — never the reverse. The step-by-step sequence immediately below is kept for the
+> historical record of how this was originally (incorrectly) reconstructed from log effects alone;
+> treat the deep-dive doc as the accurate, source-confirmed account.
+
 ## The client talks to a local model over plain HTTP
 
 A locally-loaded model is served over an OpenAI-compatible HTTP API on `localhost`. Hermes Agent's
@@ -24,10 +32,10 @@ endpoint — the difference is only that the "cloud" here is a process on the sa
 Streaming responses arrive as server-sent-event-style chunks over a long-lived HTTP connection
 that stays open for the duration of generation.
 
-## Supersession is a client-side decision, not a server error
+## Supersession is a client-side decision, not a server error (original, corrected account below)
 
-Nothing goes wrong on the model-serving side when this happens. The sequence, reconstructed from
-the log evidence:
+Nothing goes wrong on the model-serving side when this happens. The sequence, as originally
+reconstructed from the log evidence alone — **see the correction above**:
 
 1. A turn (call it Turn A) opens a streaming request and starts receiving tokens.
 2. Before Turn A's generation finishes, a second call fires on the same session — most commonly a
