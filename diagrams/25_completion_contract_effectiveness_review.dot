@@ -1,0 +1,36 @@
+digraph completion_contract_effectiveness_review {
+    graph [bgcolor="#0d1117", rankdir=LR, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Which contract fields address which false-done risk factor"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.22,0.16",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    subgraph cluster_fields {
+        label="Completion contract fields"; style="rounded"; color="#3fb950"; fontcolor="#3fb950";
+        f1 [label="outcome", color="#3fb950", fillcolor="#12351f"];
+        f2 [label="verification", color="#3fb950", fillcolor="#12351f"];
+        f3 [label="constraints", color="#3fb950", fillcolor="#12351f"];
+        f4 [label="boundaries", color="#3fb950", fillcolor="#12351f"];
+        f5 [label="stop_when", color="#3fb950", fillcolor="#12351f"];
+    }
+
+    subgraph cluster_risks {
+        label="False-done risk factors (threat_model.md)"; style="rounded"; color="#f0883e"; fontcolor="#f0883e";
+        r1 [label="Judge accepts a\n\"looks done\" claim\nwith no concrete evidence", color="#f0883e", fillcolor="#161b22"];
+        r2 [label="Judge can't tell if a\nchanged file broke\nsomething out of scope", color="#f0883e", fillcolor="#161b22"];
+        r3 [label="Agent drifts into work\nnever asked for, judge\nhas no scope to check against", color="#f0883e", fillcolor="#161b22"];
+        r4 [label="Loop should have asked\nfor input but kept going\ninstead", color="#f0883e", fillcolor="#161b22"];
+    }
+
+    f2 -> r1 [label="directly targets\n(strongest link)", color="#3fb950", penwidth=2.5];
+    f3 -> r2 [label="targets", color="#3fb950"];
+    f4 -> r3 [label="targets", color="#3fb950"];
+    f5 -> r4 [label="targets", color="#3fb950"];
+    f1 -> r1 [label="indirect — gives the\njudge SOMETHING to\ncheck against, but no\nproof mechanism alone", color="#d29922", style=dashed];
+
+    gap [label="Not addressed by any field:\na wrong or gamed verification\ncommand still passes — the\ncontract raises the bar for\nWHAT gets checked, not\nwhether the check itself\nis trustworthy", shape=note, color="#f85149", fillcolor="#3b0d0d", fontcolor="#f85149"];
+    r1 -> gap [style=invis];
+}

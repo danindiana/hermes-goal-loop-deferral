@@ -74,8 +74,44 @@ Candidates informed by what round 1 actually turned up — particularly the two 
    check — natural continuation once two of three surfaces are covered. — Status: ✅ [`docs/rollouts/kanban_goal_mode_worker_session_audit.md`](rollouts/kanban_goal_mode_worker_session_audit.md) — **found and fixed another error**: Kanban goal-mode does NOT share `GoalManager`'s per-turn hook; it judges once at handoff via a separate function. Correction added to `meta_loop_integrations.md`.
 5. **Selected: `completion_contract_effectiveness_review`.** Reason: last by elimination; most
    speculative of the five since it reviews a mechanism's design rather than auditing code or
-   proposing a new one. — Status: ⬜
+   proposing a new one. — Status: ✅ [`docs/rollouts/completion_contract_effectiveness_review.md`](rollouts/completion_contract_effectiveness_review.md)
+
+**Round 2 complete: 5/5 (10/15 overall).** This round ran heavier on source-grounded audits than
+round 1, and found and fixed two real errors in earlier docs: the background-review cancellation
+mechanism ([`API_socket_connectors.md`](API_socket_connectors.md) had the roles backwards) and the
+Kanban goal-mode judging path ([`meta_loop_integrations.md`](meta_loop_integrations.md) assumed
+too much shared machinery with `/goal`). It also fully confirmed the gateway's interrupted-turn
+gap that round 1 could only flag as open.
 
 ## Round 3
 
-_Generated after Round 2 completes._
+Candidates informed by round 2 — two threads deliberately left open there, plus natural
+next steps once two of three surfaces (CLI, gateway) and Kanban are now characterized:
+
+| # | Slug | Extends | One-line pitch |
+|---|---|---|---|
+| 1 | `gateway_queued_message_check` | `cli_gateway_hook_parity_audit` (round 1), last open parity row | Read the gateway's queued-user-message handling to close the one remaining parity-table row |
+| 2 | `nudge_interval_source_reading` | `background_review_subsystem_deep_dive` (round 2) | What actually decides a nudge is "due" — the interval logic itself, not yet read |
+| 3 | `heartbeat_collision_check` | `../threat_model.md` / `../meta_loop_integrations.md` | Does heartbeat's own idle-wake mechanism collide with `/goal` the same way background-review nudges do? |
+| 4 | `rollouts_process_retrospective` | This ledger itself | A retrospective on the MCTS-style process after 2 rounds: what worked, what the picks got right/wrong, sourced from this ledger's own record |
+| 5 | `contract_drafting_prompt_review` | `completion_contract_effectiveness_review` (round 2) | What the `goal_judge` auxiliary model is actually asked, when drafting a contract via `/goal draft` — read the prompt, not just the resulting fields |
+
+### Picks
+
+1. **Selected: `gateway_queued_message_check`.** Reason: the single most concrete unfinished
+   thread across both prior rounds — a named, specific gap with a clear yes/no answer available
+   directly from source, same shape as the round 2 rollout that closed the interrupted-turn row.
+   — Status: ⬜
+2. **Selected: `nudge_interval_source_reading`.** Reason: the deep dive in round 2 explicitly
+   flagged this as unread and load-bearing for
+   `goal_aware_nudge_scheduler_design` (round 1) actually being implementable — closes a
+   dependency the design spec was written without. — Status: ⬜
+3. **Selected: `heartbeat_collision_check`.** Reason: independent of the other four, and the
+   most natural remaining "does this other mechanism collide too" question left after nudges and
+   Kanban have both been checked. — Status: ⬜
+4. **Selected: `rollouts_process_retrospective`.** Reason: two full rounds is enough material for
+   an honest retrospective on the process itself, and it's a good anchor before round 3's other,
+   more technical items. — Status: ⬜
+5. **Selected: `contract_drafting_prompt_review`.** Reason: last by elimination; narrowest scope
+   of the five and most directly a follow-up to a single round 2 rollout rather than a broader
+   thread. — Status: ⬜
