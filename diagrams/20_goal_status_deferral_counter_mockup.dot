@@ -1,0 +1,24 @@
+digraph goal_status_deferral_counter_mockup {
+    graph [bgcolor="#0d1117", rankdir=LR, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Before / after: a deferral counter in /goal status"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.25,0.2",
+           fillcolor="#161b22"];
+    edge  [style=invis];
+
+    subgraph cluster_before {
+        label="Today"; style="rounded"; color="#8b949e"; fontcolor="#8b949e";
+        before [label="Goal: active\nTurns used: 7/20\n\n(no visibility into\nhow many turns were\nsilently deferred)", color="#8b949e", fillcolor="#161b22"];
+    }
+
+    subgraph cluster_after {
+        label="Proposed"; style="rounded"; color="#3fb950"; fontcolor="#3fb950";
+        after [label="Goal: active\nTurns used: 7/20\nDeferred: 3 turns\n  2 nudge_collision\n  1 interrupted_turn\nLast deferral: 40s ago\n(nudge_collision)", color="#3fb950", fillcolor="#12351f"];
+    }
+
+    src [label="Source: counts\ngoal_deferral log lines\n(see deferral_telemetry_spec)\nsince this goal was set", shape=note, color="#d29922", fillcolor="#1f2937"];
+
+    before -> after [style=solid, color="#58a6ff", label="", dir=forward, constraint=false];
+    after -> src [style=dashed, color="#d29922"];
+}

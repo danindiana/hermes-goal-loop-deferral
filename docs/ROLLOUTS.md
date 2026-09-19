@@ -37,11 +37,44 @@ Candidates proposed, each extending an open thread from the core docs (`future_d
    remaining design specs — it's the actual resolution `catch22.md` names, whereas the counter
    mockup is a visibility nicety on top of whatever telemetry format rollout 1 defines. — Status: ✅ [`docs/rollouts/goal_aware_nudge_scheduler_design.md`](rollouts/goal_aware_nudge_scheduler_design.md)
 5. **Selected: `goal_status_deferral_counter_mockup`.** Reason: last by elimination, and
-   naturally builds on rollout 1's telemetry vocabulary, which is now available. — Status: ⬜
+   naturally builds on rollout 1's telemetry vocabulary, which is now available. — Status: ✅ [`docs/rollouts/goal_status_deferral_counter_mockup.md`](rollouts/goal_status_deferral_counter_mockup.md)
+
+**Round 1 complete: 5/5.** Two organic findings surfaced during execution that weren't
+anticipated when the candidates were proposed: (a) the "4 deferral paths" framing in the core
+docs is a simplification — the nudge-collision path is actually a race with a separate
+background-review subsystem, not a fourth symmetric branch in either hook (found while auditing
+rollout 2); (b) the CLI's interrupted-turn auto-pause isn't confirmed to exist on the gateway
+surface (also rollout 2) — a genuine, previously-unflagged gap. Round 2 below picks up both.
 
 ## Round 2
 
-_Generated after Round 1 completes._
+Candidates informed by what round 1 actually turned up — particularly the two findings from
+`cli_gateway_hook_parity_audit` above, which round 1 didn't have when it was proposed:
+
+| # | Slug | Extends | One-line pitch |
+|---|---|---|---|
+| 1 | `background_review_subsystem_deep_dive` | Round 1 finding (a) | What the background-review subsystem actually is, and why it races goal continuations at all |
+| 2 | `gateway_interrupted_turn_gap` | Round 1 finding (b) | Follow the gateway's turn-completion path further to confirm/deny the missing interrupted-turn check |
+| 3 | `completion_contract_effectiveness_review` | `../technical_rationale.md` / `../threat_model.md` | Does a completion contract measurably reduce the false-done risk named in `threat_model.md`? A review of the mechanism, not a live test |
+| 4 | `kanban_goal_mode_worker_session_audit` | `../meta_loop_integrations.md` open item | Whether a Kanban `--goal` card's worker session hits the same 4(ish) deferral paths as an interactive CLI session |
+| 5 | `deferral_rate_baseline_methodology` | `vram_tag_comparison_protocol` (round 1) | A general measurement methodology (deferral rate, not raw count) reusable across any future comparison, not just the VRAM-tag one |
+
+### Picks
+
+1. **Selected: `background_review_subsystem_deep_dive`.** Reason: the most foundational of the
+   five — several other round 2 candidates and round 1's own refinement both lean on claims about
+   this subsystem that were inferred, not directly read from its own source. Settling this first
+   makes the others more precise. — Status: ⬜
+2. **Selected: `gateway_interrupted_turn_gap`.** Reason: directly closes a named, real gap from
+   round 1 rather than opening a new one — highest-priority unfinished thread. — Status: ⬜
+3. **Selected: `deferral_rate_baseline_methodology`.** Reason: independent of the other four,
+   and generalizes round 1's protocol work into something reusable rather than one-off. — Status: ⬜
+4. **Selected: `kanban_goal_mode_worker_session_audit`.** Reason: same shape as round 1's CLI/
+   gateway audit, applied to the third surface `../meta_loop_integrations.md` named but didn't
+   check — natural continuation once two of three surfaces are covered. — Status: ⬜
+5. **Selected: `completion_contract_effectiveness_review`.** Reason: last by elimination; most
+   speculative of the five since it reviews a mechanism's design rather than auditing code or
+   proposing a new one. — Status: ⬜
 
 ## Round 3
 
