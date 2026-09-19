@@ -32,7 +32,7 @@ Candidates proposed, each extending an open thread from the core docs (`future_d
    code, no new mechanism to design), independent of the other three remaining, and closes a
    concretely-named open question rather than proposing something new. — Status: ✅ [`docs/rollouts/cli_gateway_hook_parity_audit.md`](rollouts/cli_gateway_hook_parity_audit.md) — found a real CLI/gateway difference (interrupted-turn check) and refined the "4 deferral paths" framing (nudge collision is a subsystem race, not a hook branch)
 3. **Selected: `vram_tag_comparison_protocol`.** Reason: the leading unresolved hypothesis in
-   `known_unknowns.md`; independent of the two remaining design-spec items. — Status: ⬜
+   `known_unknowns.md`; independent of the two remaining design-spec items. — Status: ✅ [`docs/rollouts/vram_tag_comparison_protocol.md`](rollouts/vram_tag_comparison_protocol.md)
 4. **Selected: `goal_aware_nudge_scheduler_design`.** Reason: the more load-bearing of the two
    remaining design specs — it's the actual resolution `catch22.md` names, whereas the counter
    mockup is a visibility nicety on top of whatever telemetry format rollout 1 defines. — Status: ⬜

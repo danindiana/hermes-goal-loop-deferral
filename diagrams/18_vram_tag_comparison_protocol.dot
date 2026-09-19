@@ -1,0 +1,38 @@
+digraph vram_tag_comparison_protocol {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Experiment protocol: VRAM-tuned tag vs. plain tag, same workload"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.22,0.16",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    fix [label="1. Fix everything except\nthe model tag:\nsame goal text, same\ncontract, same turn budget", color="#58a6ff", fillcolor="#13294d"];
+
+    subgraph cluster_a {
+        label="Arm A"; style="rounded"; color="#3fb950"; fontcolor="#3fb950";
+        a1 [label="Load VRAM-tuned tag\n(num_batch/num_ctx tuned\nto fit 100% VRAM)", color="#3fb950", fillcolor="#12351f"];
+        a2 [label="Run the same long\n/goal loop to completion\nor turn budget", color="#3fb950", fillcolor="#12351f"];
+        a1 -> a2;
+    }
+    subgraph cluster_b {
+        label="Arm B"; style="rounded"; color="#39c5cf"; fontcolor="#39c5cf";
+        b1 [label="Load plain tag\n(untuned, same base model)", color="#39c5cf", fillcolor="#0d2e2e"];
+        b2 [label="Run the identical\n/goal loop to completion\nor turn budget", color="#39c5cf", fillcolor="#0d2e2e"];
+        b1 -> b2;
+    }
+
+    fix -> a1; fix -> b1;
+
+    measure [label="2. Capture the same 3 metrics\nfor both arms, from agent.log\nand ollama ps / nvidia-smi\nsampled during the run", shape=diamond, color="#d29922", fillcolor="#1f2937"];
+    a2 -> measure; b2 -> measure;
+
+    m1 [label="interrupted_during_api_call\ncount", color="#f0883e", fillcolor="#161b22"];
+    m2 [label="Reasoning-only clean stop\ncount", color="#f0883e", fillcolor="#161b22"];
+    m3 [label="Live VRAM headroom\n(sampled every N seconds)", color="#f0883e", fillcolor="#161b22"];
+    measure -> m1; measure -> m2; measure -> m3;
+
+    verdict [label="3. Compare: does the plain\ntag show a meaningfully\nlower rate on m1/m2, and\ndoes m3 explain why?", shape=diamond, color="#f85149", fillcolor="#3b0d0d", fontcolor="#f85149", penwidth=3];
+    m1 -> verdict; m2 -> verdict; m3 -> verdict;
+}
