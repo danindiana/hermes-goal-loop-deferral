@@ -1,0 +1,31 @@
+digraph kanban_goal_mode_worker_session_audit {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Corrected: Kanban goal-mode judges at handoff, not after every turn"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.22,0.16",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    subgraph cluster_goal {
+        label="/goal (this repo's subject)"; style="rounded"; color="#3fb950"; fontcolor="#3fb950";
+        g1 [label="Every turn completes", color="#3fb950", fillcolor="#12351f"];
+        g2 [label="Post-turn hook runs\nautomatically\n(GoalManager.evaluate_after_turn)", color="#3fb950", fillcolor="#12351f"];
+        g3 [label="4 deferral paths can\nfire on ANY turn", color="#3fb950", fillcolor="#12351f"];
+        g1 -> g2 -> g3;
+    }
+
+    subgraph cluster_kanban {
+        label="Kanban --goal worker session"; style="rounded"; color="#d29922"; fontcolor="#d29922";
+        k1 [label="Worker runs turns freely,\nno per-turn judge call", color="#d29922", fillcolor="#1f2937"];
+        k2 [label="Worker itself calls the\nkanban_complete tool\n(a deliberate handoff attempt)", color="#d29922", fillcolor="#1f2937"];
+        k3 [label="_goal_mode_handoff_rejection()\ncalls judge_goal() ONCE,\nat that handoff moment only", color="#d29922", fillcolor="#1f2937"];
+        k4 [label="Rejected → kanban_complete\nreturns an error the worker\nsees as a tool result", color="#f0883e", fillcolor="#161b22"];
+        k1 -> k2 -> k3 -> k4;
+    }
+
+    note [label="Different judge CALL, same\nunderlying judge_goal() function —\nbut NO GoalManager, NO post-turn\nhook, NO turn budget, NO auto-pause.\nThe 4 deferral paths in this repo\ndo not apply to Kanban worker\nsessions — they're a different\ntriggering mechanism entirely.", shape=note, color="#f85149", fillcolor="#3b0d0d", fontcolor="#f85149"];
+    g3 -> note [style=invis];
+    k4 -> note [style=invis];
+}

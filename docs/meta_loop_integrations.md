@@ -35,6 +35,13 @@ worker session — worth confirming directly rather than assuming, since a worke
 shape (no interactive user, no CLI-specific queue-peeking) may not trigger every path the same
 way. The board itself — cards, dependencies, assignees — is unrelated machinery.
 
+> **Correction (round 2):** confirmed directly against source in
+> [`rollouts/kanban_goal_mode_worker_session_audit.md`](rollouts/kanban_goal_mode_worker_session_audit.md)
+> — and the assumption above doesn't hold. Kanban goal-mode judges once, at handoff time, via a
+> worker-triggered check (`_goal_mode_handoff_rejection`), not via `GoalManager`'s automatic
+> per-turn hook. The four deferral paths in this repo don't apply to Kanban worker sessions at
+> all — there's no post-turn hook for a turn to be deferred from in the first place.
+
 ## Heartbeat — idle-session polling, orthogonal
 
 Heartbeat wakes an idle session on its own timer, independent of both `/goal` and `/loop`. It

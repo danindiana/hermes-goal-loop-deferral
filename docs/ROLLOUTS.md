@@ -71,7 +71,7 @@ Candidates informed by what round 1 actually turned up — particularly the two 
    and generalizes round 1's protocol work into something reusable rather than one-off. — Status: ✅ [`docs/rollouts/deferral_rate_baseline_methodology.md`](rollouts/deferral_rate_baseline_methodology.md)
 4. **Selected: `kanban_goal_mode_worker_session_audit`.** Reason: same shape as round 1's CLI/
    gateway audit, applied to the third surface `../meta_loop_integrations.md` named but didn't
-   check — natural continuation once two of three surfaces are covered. — Status: ⬜
+   check — natural continuation once two of three surfaces are covered. — Status: ✅ [`docs/rollouts/kanban_goal_mode_worker_session_audit.md`](rollouts/kanban_goal_mode_worker_session_audit.md) — **found and fixed another error**: Kanban goal-mode does NOT share `GoalManager`'s per-turn hook; it judges once at handoff via a separate function. Correction added to `meta_loop_integrations.md`.
 5. **Selected: `completion_contract_effectiveness_review`.** Reason: last by elimination; most
    speculative of the five since it reviews a mechanism's design rather than auditing code or
    proposing a new one. — Status: ⬜
