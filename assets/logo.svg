@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="200" viewBox="0 0 640 200">
+  <defs>
+    <linearGradient id="loop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#58a6ff"/>
+      <stop offset="100%" stop-color="#bc8cff"/>
+    </linearGradient>
+    <linearGradient id="skip" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f0883e"/>
+      <stop offset="100%" stop-color="#f85149"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="640" height="200" fill="#0d1117"/>
+
+  <g transform="translate(100,100)">
+    <!-- looping arc: mostly complete, with a broken gap standing for the missed judge call -->
+    <circle cx="0" cy="0" r="52" fill="none" stroke="url(#loop)" stroke-width="7"
+            stroke-linecap="round" stroke-dasharray="255 55" stroke-dashoffset="40" filter="url(#glow)"/>
+    <!-- the gap, marked -->
+    <circle cx="0" cy="0" r="52" fill="none" stroke="url(#skip)" stroke-width="7"
+            stroke-linecap="round" stroke-dasharray="30 280" stroke-dashoffset="-15" filter="url(#glow)"/>
+    <!-- judge diamond sitting off to the side, disconnected during the gap -->
+    <rect x="-11" y="-11" width="22" height="22" rx="4" fill="#161b22" stroke="#3fb950" stroke-width="3"
+          transform="rotate(45)"/>
+  </g>
+
+  <text x="190" y="90" font-family="Helvetica, Arial, sans-serif" font-size="40"
+        font-weight="700" fill="#dfe6ee">hermes-goal-loop</text>
+  <text x="190" y="138" font-family="Helvetica, Arial, sans-serif" font-size="40"
+        font-weight="700" fill="#f0883e">deferral</text>
+</svg>

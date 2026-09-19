@@ -1,0 +1,36 @@
+digraph nudge_collision_sequence {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Observed timeline: a skill-library nudge swallows one judge call"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.22,0.16",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    // Lane headers
+    {
+        rank=same;
+        h_main   [label="Main Model Turn", shape=plaintext, fontcolor="#58a6ff", fontsize=14];
+        h_hook   [label="Post-turn Hook", shape=plaintext, fontcolor="#bc8cff", fontsize=14];
+        h_nudge  [label="Background Review\n(skill-library nudge)", shape=plaintext, fontcolor="#d29922", fontsize=14];
+        h_judge  [label="Judge Model", shape=plaintext, fontcolor="#3fb950", fontsize=14];
+    }
+
+    s1 [label="1. Goal-continuation turn\ncompletes normally\nwith a real response", color="#58a6ff", fillcolor="#13294d"];
+    s2 [label="2. Hook checks conditions —\nnext injected turn is a\nskill-library nudge, not a\ngoal continuation", color="#bc8cff", fillcolor="#1f2937"];
+    s3 [label="3. Nudge turn runs,\nthen gets interrupted /\nsuperseded when the real\ngoal continuation is ready", color="#d29922", fillcolor="#1f2937"];
+    gap [label="MISSING JUDGE CALL\nno judge invoked between\nstep 1 and step 4", shape=box, style="filled,rounded,dashed", color="#f85149", fillcolor="#3b0d0d", fontcolor="#f85149", penwidth=3];
+    s4 [label="4. Goal continuation prompt\nis re-injected and\nresumes normally", color="#58a6ff", fillcolor="#13294d"];
+    s5 [label="5. Judge finally runs\non THIS turn's response,\none turn later than expected", color="#3fb950", fillcolor="#12351f"];
+
+    s1 -> s2 [label="turn ends", color="#58a6ff"];
+    s2 -> s3 [label="nudge injected\ninstead of judge", color="#d29922"];
+    s3 -> gap [style=dashed, color="#f85149"];
+    gap -> s4 [style=dashed, color="#f85149"];
+    s4 -> s5 [label="judge call\nresumes", color="#3fb950"];
+
+    { rank=same; h_main; s1; }
+    { rank=same; h_hook; s2; }
+    { rank=same; h_nudge; s3; }
+}

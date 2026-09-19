@@ -1,0 +1,39 @@
+digraph deferral_decision_flow {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Post-turn hook: four ways to skip the judge before one way to call it"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.25,0.18",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    start [label="Turn completes", shape=oval, color="#58a6ff", fillcolor="#13294d"];
+
+    q1 [label="Was the turn interrupted?\n(stream cut / cancelled)", shape=diamond, color="#d29922", fillcolor="#1f2937"];
+    skip1 [label="Auto-pause the goal.\nNo judge call.", color="#f85149", fillcolor="#161b22"];
+
+    q2 [label="Is the last response\nempty / whitespace?", shape=diamond, color="#d29922", fillcolor="#1f2937"];
+    skip2 [label="Skip silently.\nNo judge call.", color="#f85149", fillcolor="#161b22"];
+
+    q3 [label="Is a real (non-slash)\nuser message already queued?", shape=diamond, color="#d29922", fillcolor="#1f2937"];
+    skip3 [label="Defer to the user's turn.\nNo judge call this turn.", color="#f85149", fillcolor="#161b22"];
+
+    q4 [label="Was this a periodic\nbackground-review nudge\n(skill-library / memory), not\na goal continuation?", shape=diamond, color="#d29922", fillcolor="#1f2937"];
+    skip4 [label="Not a goal turn.\nNo judge call —\nwait for the next turn.", color="#f85149", fillcolor="#161b22"];
+
+    call [label="Call the judge model", color="#3fb950", fillcolor="#12351f", penwidth=3];
+
+    start -> q1;
+    q1 -> skip1 [label="yes", color="#f0883e"];
+    q1 -> q2 [label="no", color="#3fb950"];
+
+    q2 -> skip2 [label="yes", color="#f0883e"];
+    q2 -> q3 [label="no", color="#3fb950"];
+
+    q3 -> skip3 [label="yes", color="#f0883e"];
+    q3 -> q4 [label="no", color="#3fb950"];
+
+    q4 -> skip4 [label="yes", color="#f0883e"];
+    q4 -> call [label="no", color="#3fb950", penwidth=2];
+}

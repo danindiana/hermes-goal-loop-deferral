@@ -1,0 +1,39 @@
+digraph goal_loop_architecture {
+    graph [bgcolor="#0d1117", rankdir=LR, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="The /goal loop: two architecturally separate models"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.25,0.18",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    subgraph cluster_main {
+        label="Main loaded model (local, e.g. Ollama)";
+        style="rounded";
+        color="#58a6ff";
+        fontcolor="#58a6ff";
+        main_model [label="Main model\nhandles the turn\n(tools, generation)", color="#58a6ff", fillcolor="#13294d"];
+    }
+
+    hook [label="Post-turn hook\n(runs after every turn)", color="#bc8cff", fillcolor="#1f2937"];
+
+    subgraph cluster_judge {
+        label="Auxiliary judge model (separate, fast, cloud)";
+        style="rounded";
+        color="#3fb950";
+        fontcolor="#3fb950";
+        judge_model [label="Judge model\ne.g. lightweight cloud model", color="#3fb950", fillcolor="#1f2937"];
+    }
+
+    verdict [label="Verdict\ndone / continue / blocked / wait", shape=diamond, color="#d29922", fillcolor="#1f2937"];
+    enqueue [label="Enqueue continuation prompt\ninto same session", color="#39c5cf", fillcolor="#0d2e2e"];
+    stop [label="Stop looping\n(done / blocked / turn budget)", color="#f0883e", fillcolor="#161b22"];
+
+    main_model -> hook [label="final response text", color="#58a6ff"];
+    hook -> judge_model [label="goal text + last response", color="#bc8cff"];
+    judge_model -> verdict [color="#3fb950"];
+    verdict -> enqueue [label="continue", color="#39c5cf"];
+    verdict -> stop [label="done / blocked", color="#f0883e"];
+    enqueue -> main_model [label="next turn", color="#39c5cf", constraint=false];
+}

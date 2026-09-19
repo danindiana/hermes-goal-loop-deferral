@@ -1,0 +1,48 @@
+digraph model_interruption_comparison {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Interrupted turns and reasoning-only stalls, by loaded model\n(bar width proportional to count; qwen3.5:9b-vram-fit is the current default)",
+           nodesep=0.15, ranksep=0.32];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", shape=plaintext, fontsize=12];
+    edge  [style=invis];
+
+    // Row label, then an unlabeled colored bar, then its count as a separate text node.
+    label_qwen   [label="qwen3.5:9b-vram-fit (current default)", fontcolor="#f0883e", fontsize=13];
+    bar_qwen_i   [label="", shape=box, style=filled, color="#f85149", fillcolor="#f85149", fixedsize=true, width=2.7, height=0.32];
+    n_qwen_i     [label="interrupted: 55", fontcolor="#f85149"];
+    bar_qwen_r   [label="", shape=box, style=filled, color="#f0883e", fillcolor="#f0883e", fixedsize=true, width=4.0, height=0.32];
+    n_qwen_r     [label="reasoning-only stall: 87", fontcolor="#f0883e"];
+
+    label_muse   [label="muse-glimmer:30b", fontcolor="#adbac7", fontsize=13];
+    bar_muse_i   [label="", shape=box, style=filled, color="#58a6ff", fillcolor="#1a3a5c", fixedsize=true, width=0.55, height=0.32];
+    n_muse_i     [label="interrupted: 7", fontcolor="#adbac7"];
+    bar_muse_r   [label="", shape=box, style=filled, color="#30363d", fillcolor="#161b22", fixedsize=true, width=0.35, height=0.32];
+    n_muse_r     [label="reasoning-only stall: 0", fontcolor="#8b949e"];
+
+    label_nemo   [label="nemotron-3.5-lightning:1m", fontcolor="#adbac7", fontsize=13];
+    bar_nemo_i   [label="", shape=box, style=filled, color="#58a6ff", fillcolor="#1a3a5c", fixedsize=true, width=0.42, height=0.32];
+    n_nemo_i     [label="interrupted: 4", fontcolor="#adbac7"];
+    bar_nemo_r   [label="", shape=box, style=filled, color="#3fb950", fillcolor="#173a24", fixedsize=true, width=0.55, height=0.32];
+    n_nemo_r     [label="reasoning-only stall: 6", fontcolor="#adbac7"];
+
+    label_north  [label="north-mini-code-1.0", fontcolor="#adbac7", fontsize=13];
+    bar_north_i  [label="", shape=box, style=filled, color="#58a6ff", fillcolor="#1a3a5c", fixedsize=true, width=0.38, height=0.32];
+    n_north_i    [label="interrupted: 3", fontcolor="#adbac7"];
+    bar_north_r  [label="", shape=box, style=filled, color="#3fb950", fillcolor="#173a24", fixedsize=true, width=0.6, height=0.32];
+    n_north_r    [label="reasoning-only stall: 7", fontcolor="#adbac7"];
+
+    label_laguna [label="laguna-xs.2", fontcolor="#adbac7", fontsize=13];
+    bar_laguna_i [label="", shape=box, style=filled, color="#58a6ff", fillcolor="#1a3a5c", fixedsize=true, width=0.3, height=0.32];
+    n_laguna_i   [label="interrupted: 1", fontcolor="#adbac7"];
+    bar_laguna_r [label="", shape=box, style=filled, color="#30363d", fillcolor="#161b22", fixedsize=true, width=0.3, height=0.32];
+    n_laguna_r   [label="reasoning-only stall: 0", fontcolor="#8b949e"];
+
+    { rank=same; label_qwen; bar_qwen_i; n_qwen_i; bar_qwen_r; n_qwen_r; }
+    { rank=same; label_muse; bar_muse_i; n_muse_i; bar_muse_r; n_muse_r; }
+    { rank=same; label_nemo; bar_nemo_i; n_nemo_i; bar_nemo_r; n_nemo_r; }
+    { rank=same; label_north; bar_north_i; n_north_i; bar_north_r; n_north_r; }
+    { rank=same; label_laguna; bar_laguna_i; n_laguna_i; bar_laguna_r; n_laguna_r; }
+
+    label_qwen -> label_muse -> label_nemo -> label_north -> label_laguna;
+    label_qwen -> bar_qwen_i -> n_qwen_i -> bar_qwen_r -> n_qwen_r;
+}
