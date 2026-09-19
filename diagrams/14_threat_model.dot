@@ -1,0 +1,36 @@
+digraph threat_model {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Operational/reliability risk matrix (not a security threat model)"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.2,0.14",
+           fillcolor="#161b22", fontsize=12];
+    edge  [style=invis];
+
+    subgraph cluster_hi_hi {
+        label="High likelihood / High impact"; style="rounded"; color="#f85149"; fontcolor="#f85149";
+        r1 [label="Long goal loop silently\nstalls for many turns\non a VRAM-pressured model", color="#f85149", fillcolor="#3b0d0d"];
+    }
+    subgraph cluster_hi_lo {
+        label="High likelihood / Lower impact"; style="rounded"; color="#d29922"; fontcolor="#d29922";
+        r2 [label="Judge call slips one turn\nafter a nudge collision", color="#d29922", fillcolor="#1f2937"];
+        r3 [label="Goal auto-pauses on an\ninterrupted turn, user\nunaware it needs /goal resume", color="#d29922", fillcolor="#1f2937"];
+        r2 -> r3 [style=invis];
+        {rank=same; r2; r3;}
+    }
+    subgraph cluster_lo_hi {
+        label="Lower likelihood / High impact"; style="rounded"; color="#f0883e"; fontcolor="#f0883e";
+        r4 [label="False ✓ done verdict on\nunderspecified goal text\n(judge is conservative,\nbut not infallible)", color="#f0883e", fillcolor="#161b22"];
+        r5 [label="Turn budget exhausted\nmid-task on a long,\nvague, un-contracted goal", color="#f0883e", fillcolor="#161b22"];
+        r4 -> r5 [style=invis];
+        {rank=same; r4; r5;}
+    }
+    subgraph cluster_lo_lo {
+        label="Lower likelihood / Lower impact"; style="rounded"; color="#3fb950"; fontcolor="#3fb950";
+        r6 [label="Auxiliary judge provider\nmisconfigured (fail-open\nto \"continue\", turn budget\nstill bounds it)", color="#3fb950", fillcolor="#12351f"];
+    }
+
+    r1 -> r2 [style=invis, minlen=2];
+    r3 -> r4 [style=invis, minlen=2];
+    r5 -> r6 [style=invis, minlen=2];
+}

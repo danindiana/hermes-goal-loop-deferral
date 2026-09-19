@@ -1,0 +1,47 @@
+digraph technical_rationale {
+    graph [bgcolor="#0d1117", rankdir=LR, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Design goal → mechanism → tradeoff, for each deferral path"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.2,0.14",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    node [width=2.2];
+    subgraph cluster_1 {
+        label="Interrupted turns";
+        style="rounded"; color="#58a6ff"; fontcolor="#58a6ff";
+        g1 [label="Goal: never re-queue\nwork that was cancelled\nmid-generation", color="#58a6ff", fillcolor="#13294d"];
+        m1 [label="Mechanism: auto-pause\ninstead of judging", color="#58a6ff", fillcolor="#13294d"];
+        t1 [label="Tradeoff: pause looks\nidentical to \"stopped\"", color="#f0883e", fillcolor="#161b22"];
+        g1 -> m1 -> t1;
+    }
+    subgraph cluster_2 {
+        label="Empty responses";
+        style="rounded"; color="#3fb950"; fontcolor="#3fb950";
+        g2 [label="Goal: never judge a\nnon-answer as progress", color="#3fb950", fillcolor="#12351f"];
+        m2 [label="Mechanism: skip silently\nif response is blank", color="#3fb950", fillcolor="#12351f"];
+        t2 [label="Tradeoff: a genuine\nstream drop looks skipped", color="#f0883e", fillcolor="#161b22"];
+        g2 -> m2 -> t2;
+    }
+    subgraph cluster_3 {
+        label="Queued user message";
+        style="rounded"; color="#bc8cff"; fontcolor="#bc8cff";
+        g3 [label="Goal: the user's own\ninput always wins", color="#bc8cff", fillcolor="#241a3d"];
+        m3 [label="Mechanism: defer judging\nuntil after their turn", color="#bc8cff", fillcolor="#241a3d"];
+        t3 [label="Tradeoff: goal state can\nlag one turn behind", color="#f0883e", fillcolor="#161b22"];
+        g3 -> m3 -> t3;
+    }
+    subgraph cluster_4 {
+        label="Background nudges";
+        style="rounded"; color="#d29922"; fontcolor="#d29922";
+        g4 [label="Goal: skill/memory\nupkeep independent\nof goal state", color="#d29922", fillcolor="#1f2937"];
+        m4 [label="Mechanism: nudge turns\naren't goal turns —\nnot judged", color="#d29922", fillcolor="#1f2937"];
+        t4 [label="Tradeoff: judge call\nslips by one turn", color="#f0883e", fillcolor="#161b22"];
+        g4 -> m4 -> t4;
+    }
+
+    shared [label="Shared backstop: the\nturn budget always\nhalts the loop eventually,\nno matter which path fires", shape=diamond, color="#f85149", fillcolor="#3b0d0d", fontcolor="#f85149", penwidth=3];
+    t1 -> shared; t2 -> shared; t3 -> shared; t4 -> shared;
+}

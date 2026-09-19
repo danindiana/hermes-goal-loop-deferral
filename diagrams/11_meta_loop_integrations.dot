@@ -1,0 +1,37 @@
+digraph meta_loop_integrations {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="/goal among Hermes' other standing-loop constructs"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.22,0.16",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    subgraph cluster_goal {
+        label="/goal — single session"; style="rounded"; color="#3fb950"; fontcolor="#3fb950";
+        goal [label="Standing objective,\njudged every turn,\nthis repo's subject", color="#3fb950", fillcolor="#12351f"];
+    }
+    subgraph cluster_loop {
+        label="/loop — scheduled wakeups"; style="rounded"; color="#58a6ff"; fontcolor="#58a6ff";
+        loop [label="Fires a prompt on an\ninterval, own completion hook,\nseparate from goal judging", color="#58a6ff", fillcolor="#13294d"];
+    }
+    subgraph cluster_kanban {
+        label="Kanban goal-mode cards"; style="rounded"; color="#bc8cff"; fontcolor="#bc8cff";
+        kanban [label="Board of many tasks;\na --goal card runs the\nsame engine inside its\nown worker session", color="#bc8cff", fillcolor="#241a3d"];
+    }
+    subgraph cluster_heartbeat {
+        label="Heartbeat"; style="rounded"; color="#d29922"; fontcolor="#d29922";
+        heartbeat [label="Idle-session poller,\nwakes a session on a\ntimer independent of /goal", color="#d29922", fillcolor="#1f2937"];
+    }
+
+    shared [label="Shared post-turn plumbing:\nsession resolution, adapter FIFO,\nstatus-notice delivery", shape=diamond, color="#f0883e", fillcolor="#161b22", penwidth=2];
+
+    goal -> shared [dir=both, color="#3fb950"];
+    loop -> shared [dir=both, color="#58a6ff"];
+    kanban -> goal [label="borrows the\ngoal engine", color="#bc8cff"];
+    heartbeat -> shared [dir=both, color="#d29922"];
+
+    note [label="The deferral paths in this repo\nare specific to /goal's post-turn\nhook — /loop's completion hook\nhas its own, separate logic", shape=note, color="#f85149", fillcolor="#3b0d0d", fontcolor="#f85149"];
+    shared -> note [style=dashed, color="#f85149"];
+}

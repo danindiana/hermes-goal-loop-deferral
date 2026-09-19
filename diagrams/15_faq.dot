@@ -1,0 +1,37 @@
+digraph faq {
+    graph [bgcolor="#0d1117", rankdir=LR, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Which doc answers your question"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.2,0.14",
+           fillcolor="#161b22", fontsize=12];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    q1 [label="\"Why did my\ngoal stop firing?\"", color="#58a6ff", fillcolor="#13294d"];
+    q2 [label="\"What do I do\nright now?\"", color="#58a6ff", fillcolor="#13294d"];
+    q3 [label="\"Why is it built\nthis way?\"", color="#58a6ff", fillcolor="#13294d"];
+    q4 [label="\"What don't we\nknow yet?\"", color="#58a6ff", fillcolor="#13294d"];
+    q5 [label="\"What's next?\"", color="#58a6ff", fillcolor="#13294d"];
+    q6 [label="\"How does this fit\nwith /loop, Kanban?\"", color="#58a6ff", fillcolor="#13294d"];
+    q7 [label="\"What's actually\nhappening at the\nsocket level?\"", color="#58a6ff", fillcolor="#13294d"];
+    q8 [label="\"What could go\nwrong from this?\"", color="#58a6ff", fillcolor="#13294d"];
+
+    d_readme [label="README.md", color="#3fb950", fillcolor="#12351f"];
+    d_howto [label="docs/howto.md", color="#3fb950", fillcolor="#12351f"];
+    d_rationale [label="docs/technical_rationale.md", color="#3fb950", fillcolor="#12351f"];
+    d_unknowns [label="docs/known_unknowns.md", color="#3fb950", fillcolor="#12351f"];
+    d_future [label="docs/future_directions.md", color="#3fb950", fillcolor="#12351f"];
+    d_meta [label="docs/meta_loop_integrations.md", color="#3fb950", fillcolor="#12351f"];
+    d_api [label="docs/API_socket_connectors.md", color="#3fb950", fillcolor="#12351f"];
+    d_threat [label="docs/threat_model.md", color="#3fb950", fillcolor="#12351f"];
+
+    q1 -> d_readme;
+    q2 -> d_howto;
+    q3 -> d_rationale;
+    q4 -> d_unknowns;
+    q5 -> d_future;
+    q6 -> d_meta;
+    q7 -> d_api;
+    q8 -> d_threat;
+}

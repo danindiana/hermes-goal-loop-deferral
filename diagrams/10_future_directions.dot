@@ -1,0 +1,27 @@
+digraph future_directions {
+    graph [bgcolor="#0d1117", rankdir=LR, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Follow-up directions, roughly nearest to furthest"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.22,0.16",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    now [label="Now:\nread this repo,\nwatch for the 4 patterns\nin your own logs", shape=oval, color="#3fb950", fillcolor="#12351f"];
+
+    near1 [label="Near-term:\ncompare interruption rate,\nVRAM-tuned vs. plain\nmodel tag, same workload", color="#58a6ff", fillcolor="#13294d"];
+    near2 [label="Near-term:\nwiden skill/memory\nnudge intervals during\nactive goal loops", color="#58a6ff", fillcolor="#13294d"];
+
+    mid1 [label="Mid-term:\ngoal-aware nudge scheduler\n(skip while active, catch\nup right after)", color="#d29922", fillcolor="#1f2937"];
+    mid2 [label="Mid-term:\nlog a distinct line when\nthe judge is skipped\n(not just silently absent)", color="#d29922", fillcolor="#1f2937"];
+
+    far1 [label="Longer-term:\na /goal-visible deferral\ncounter, surfaced in\n/goal status output", color="#bc8cff", fillcolor="#241a3d"];
+    far2 [label="Longer-term:\ncompare CLI vs. gateway\npost-turn hook parity", color="#bc8cff", fillcolor="#241a3d"];
+
+    now -> near1; now -> near2;
+    near1 -> mid1; near2 -> mid1;
+    near2 -> mid2;
+    mid1 -> far1; mid2 -> far1;
+    mid1 -> far2;
+}

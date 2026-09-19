@@ -1,0 +1,42 @@
+digraph known_unknowns {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Known / unknown map for this diagnosis"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.22,0.16",
+           fillcolor="#161b22"];
+    edge  [style=invis];
+
+    subgraph cluster_k_confirmed {
+        label="Known — confirmed in logs";
+        style="rounded"; color="#3fb950"; fontcolor="#3fb950";
+        k1 [label="Judge resolves correctly\nwhen called", color="#3fb950", fillcolor="#12351f"];
+        k2 [label="4 deferral paths exist\nin the CLI post-turn hook", color="#3fb950", fillcolor="#12351f"];
+        k3 [label="One model dominates\ninterruption/stall counts", color="#3fb950", fillcolor="#12351f"];
+        k1 -> k2 -> k3 [style=invis];
+        {rank=same; k1; k2; k3;}
+    }
+
+    subgraph cluster_k_inferred {
+        label="Known — strongly inferred, not measured directly";
+        style="rounded"; color="#58a6ff"; fontcolor="#58a6ff";
+        i1 [label="Long goal loops push\nthat model deep into\nits context window", color="#58a6ff", fillcolor="#13294d"];
+        i2 [label="Concurrent nudge calls\ncontend for the same stream", color="#58a6ff", fillcolor="#13294d"];
+        i1 -> i2 [style=invis];
+        {rank=same; i1; i2;}
+    }
+
+    subgraph cluster_unknown {
+        label="Unknown — open questions";
+        style="dashed,rounded"; color="#f0883e"; fontcolor="#f0883e";
+        u1 [label="Exact live VRAM headroom\nduring a long goal loop", color="#f0883e", fillcolor="#161b22"];
+        u2 [label="Whether the gateway path\nhas the same 4 gaps as CLI", color="#f0883e", fillcolor="#161b22"];
+        u3 [label="Whether a non-VRAM-tuned\nmodel tag avoids the\ninterruption pattern", color="#f0883e", fillcolor="#161b22"];
+        u4 [label="Whether other rarely-used\nmodels would show the\nsame pattern under load", color="#f0883e", fillcolor="#161b22"];
+        u1 -> u2 -> u3 -> u4 [style=invis];
+        {rank=same; u1; u2; u3; u4;}
+    }
+
+    k3 -> i1 [style=invis, minlen=2];
+    i2 -> u1 [style=invis, minlen=2];
+}

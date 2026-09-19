@@ -1,0 +1,29 @@
+digraph api_socket_connectors {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Client ↔ socket ↔ local model: what \"stale stream, superseded\" means"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.22,0.16",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    {rank=same; l1 [label="Hermes Agent", shape=plaintext, fontcolor="#58a6ff", fontsize=13];
+                l2 [label="OpenAI-compatible client", shape=plaintext, fontcolor="#39c5cf", fontsize=13];
+                l3 [label="Local HTTP socket", shape=plaintext, fontcolor="#d29922", fontsize=13];
+                l4 [label="Ollama (local model)", shape=plaintext, fontcolor="#3fb950", fontsize=13];}
+
+    s1 [label="1. Turn A opens a\nstreaming chat completion\nrequest", color="#58a6ff", fillcolor="#13294d"];
+    s2 [label="2. Client opens a socket,\nstreams tokens back\nas SSE chunks", color="#39c5cf", fillcolor="#0d2e2e"];
+    s3 [label="3. A second call fires\nbefore Turn A finishes\n(e.g. background review)", color="#d29922", fillcolor="#1f2937"];
+    s4 [label="4. Client marks Turn A's\nread as superseded,\nforce-closes its socket", color="#f0883e", fillcolor="#161b22"];
+    s5 [label="5. Ollama keeps generating\nbriefly into a socket\nnobody is reading", color="#3fb950", fillcolor="#12351f"];
+    s6 [label="6. Turn A's turn-loop sees\n\"interrupted_during_api_call\" —\nthis is the deferral trigger", shape=diamond, color="#f85149", fillcolor="#3b0d0d", fontcolor="#f85149", penwidth=3];
+
+    s1 -> s2 -> s3 -> s4 -> s5 -> s6;
+
+    {rank=same; l1; s1;}
+    {rank=same; l2; s2;}
+    {rank=same; l3; s4;}
+    {rank=same; l4; s5;}
+}

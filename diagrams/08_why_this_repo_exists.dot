@@ -1,0 +1,38 @@
+digraph why_this_repo_exists {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Scope: documentation, not a patch — and its own repo, not a subfolder"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.22,0.16",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    subgraph cluster_core {
+        label="Hermes Agent (upstream product)";
+        style="dashed,rounded"; color="#58a6ff"; fontcolor="#58a6ff";
+        core [label="Vendored install:\n/goal, post-turn hooks,\njudge client", color="#58a6ff", fillcolor="#13294d"];
+    }
+
+    subgraph cluster_this {
+        label="This repo: hermes-goal-loop-deferral";
+        style="rounded"; color="#3fb950"; fontcolor="#3fb950";
+        this [label="Diagnosis + evidence +\nmitigation proposals\n(read-only findings)", color="#3fb950", fillcolor="#12351f"];
+    }
+
+    subgraph cluster_siblings {
+        label="Sibling writeup repos (same author)";
+        style="dashed,rounded"; color="#bc8cff"; fontcolor="#bc8cff";
+        sib1 [label="hermes-sandbox-pdf-tooling", color="#bc8cff", fillcolor="#241a3d"];
+        sib2 [label="hermes-agent-blast-radius", color="#bc8cff", fillcolor="#241a3d"];
+        sib3 [label="hermes-gpu-docker-architecture", color="#bc8cff", fillcolor="#241a3d"];
+    }
+
+    core -> this [label="observed via logs,\nnever modified", color="#f0883e", style=dashed];
+    this -> sib1 [label="same convention,\nseparate topic", color="#8b949e", style=dotted, dir=none];
+    this -> sib2 [color="#8b949e", style=dotted, dir=none];
+    this -> sib3 [color="#8b949e", style=dotted, dir=none];
+
+    note [label="Each topic gets its own repo\nwhen it's self-contained;\na subfolder is used instead\nwhen a topic extends an\nexisting repo's subject", shape=note, color="#d29922", fillcolor="#1f2937"];
+    this -> note [style=invis];
+}

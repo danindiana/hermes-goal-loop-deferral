@@ -1,0 +1,30 @@
+digraph glossary {
+    graph [bgcolor="#0d1117", rankdir=LR, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="How the core terms relate"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.2,0.14",
+           fillcolor="#161b22", fontsize=12];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9, fontsize=11];
+
+    goal [label="goal\nstanding objective", color="#3fb950", fillcolor="#12351f"];
+    contract [label="completion contract\noptional structured goal", color="#3fb950", fillcolor="#12351f"];
+    gate [label="quality gate\nshell command, must pass", color="#3fb950", fillcolor="#12351f"];
+    judge [label="judge\nauxiliary model verdict", color="#58a6ff", fillcolor="#13294d"];
+    verdict [label="verdict\ndone/continue/blocked/wait", color="#58a6ff", fillcolor="#13294d"];
+    cont_prompt [label="continuation prompt\nre-injected turn text", color="#39c5cf", fillcolor="#0d2e2e"];
+    deferral [label="deferral\nhook skips the judge call", color="#f0883e", fillcolor="#161b22"];
+    nudge [label="nudge\nperiodic skill/memory review", color="#d29922", fillcolor="#1f2937"];
+    stale [label="stale stream\nsuperseded/force-closed socket", color="#f85149", fillcolor="#3b0d0d", fontcolor="#f85149"];
+
+    goal -> contract [label="may include"];
+    goal -> gate [label="may include"];
+    goal -> judge [label="evaluated by"];
+    judge -> verdict [label="returns"];
+    verdict -> cont_prompt [label="\"continue\" enqueues"];
+    cont_prompt -> goal [label="feeds back into", style=dashed];
+    deferral -> judge [label="skips calling", style=dashed, color="#f0883e"];
+    nudge -> deferral [label="one trigger for"];
+    stale -> deferral [label="another trigger for"];
+}

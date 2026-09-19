@@ -1,0 +1,36 @@
+digraph catch22 {
+    graph [bgcolor="#0d1117", rankdir=LR, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="The catch-22: fixing deferral competes with what the nudges protect"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.25,0.18",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    subgraph cluster_a {
+        label="Pull A: reliability of the goal loop";
+        style="dashed,rounded";
+        color="#58a6ff"; fontcolor="#58a6ff";
+        a1 [label="Space out / suppress\nskill + memory nudges", color="#58a6ff", fillcolor="#13294d"];
+        a2 [label="Fewer nudge-vs-goal\ncollisions", color="#58a6ff", fillcolor="#13294d"];
+        a1 -> a2;
+    }
+
+    subgraph cluster_b {
+        label="Pull B: long-run session health";
+        style="dashed,rounded";
+        color="#d29922"; fontcolor="#d29922";
+        b1 [label="Nudges exist to keep\nskill/memory libraries\ncurrent during long runs", color="#d29922", fillcolor="#1f2937"];
+        b2 [label="Rarer nudges = staler\nskills/memory by the time\na long goal loop ends", color="#d29922", fillcolor="#1f2937"];
+        b1 -> b2;
+    }
+
+    tension [label="Both pulls are real.\nThere is no interval that\nfully satisfies both.", shape=diamond, color="#f0883e", fillcolor="#3b0d0d", fontcolor="#f0883e", penwidth=3];
+
+    a2 -> tension [color="#58a6ff"];
+    b2 -> tension [color="#d29922"];
+
+    resolution [label="Resolution isn't a bigger\nnumber — it's making nudges\ngoal-aware (skip while a\ngoal is mid-loop, catch up after)", color="#3fb950", fillcolor="#12351f"];
+    tension -> resolution [color="#3fb950", penwidth=2];
+}

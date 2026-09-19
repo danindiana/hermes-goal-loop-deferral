@@ -7,7 +7,7 @@
   <img alt="platform" src="https://img.shields.io/badge/platform-Linux-informational">
   <img alt="made-with-hermes" src="https://img.shields.io/badge/made%20with-Hermes%20Agent-8b5cf6">
   <img alt="made-with-ollama" src="https://img.shields.io/badge/made%20with-Ollama-000000">
-  <img alt="diagrams" src="https://img.shields.io/badge/diagrams-4%20%C3%97%202%20formats-orange">
+  <img alt="diagrams" src="https://img.shields.io/badge/diagrams-15%20%C3%97%202%20formats-orange">
   <img alt="rendered-with" src="https://img.shields.io/badge/rendered%20with-Graphviz-2e8b57">
   <a href="https://github.com/danindiana/hermes-goal-loop-deferral/actions/workflows/verify-diagrams.yml"><img alt="CI" src="https://github.com/danindiana/hermes-goal-loop-deferral/actions/workflows/verify-diagrams.yml/badge.svg"></a>
   <img alt="last-commit" src="https://img.shields.io/github/last-commit/danindiana/hermes-goal-loop-deferral">
@@ -36,6 +36,7 @@ turn boundaries, interruption events, and stream-drop messages — not a synthet
 - [Why one model hit it hardest](#why-one-model-hit-it-hardest)
 - [Mitigation proposals](#mitigation-proposals)
 - [Diagrams](#diagrams)
+- [Documentation](#documentation)
 - [Repo structure](#repo-structure)
 - [License](#license)
 
@@ -159,6 +160,17 @@ Not applied here — documented as concrete next steps:
 | 02 | [`deferral_decision_flow`](diagrams/02_deferral_decision_flow.svg) | The post-turn hook's decision tree — four skip paths before the one path that calls the judge |
 | 03 | [`nudge_collision_sequence`](diagrams/03_nudge_collision_sequence.svg) | The reconstructed timeline where a skill-library nudge swallows a judge call |
 | 04 | [`model_interruption_comparison`](diagrams/04_model_interruption_comparison.svg) | Interrupted-turn and reasoning-stall counts by model, with the heaviest-hit model flagged |
+| 05 | [`catch22`](diagrams/05_catch22.svg) | The tension between reducing nudge collisions and preserving what the nudges protect |
+| 06 | [`howto`](diagrams/06_howto.svg) | Step-by-step flowchart for diagnosing a stalled goal loop |
+| 07 | [`technical_rationale`](diagrams/07_technical_rationale.svg) | Design goal → mechanism → tradeoff for each deferral path |
+| 08 | [`why_this_repo_exists`](diagrams/08_why_this_repo_exists.svg) | This repo's scope relative to Hermes Agent core and sibling writeup repos |
+| 09 | [`known_unknowns`](diagrams/09_known_unknowns.svg) | Confirmed vs. inferred vs. genuinely open questions |
+| 10 | [`future_directions`](diagrams/10_future_directions.svg) | Near- to longer-term follow-up roadmap |
+| 11 | [`meta_loop_integrations`](diagrams/11_meta_loop_integrations.svg) | How `/goal` relates to `/loop`, Kanban goal-mode cards, and heartbeat |
+| 12 | [`api_socket_connectors`](diagrams/12_api_socket_connectors.svg) | The client/socket sequence behind a stream supersession |
+| 13 | [`glossary`](diagrams/13_glossary.svg) | Core terms and how they relate |
+| 14 | [`threat_model`](diagrams/14_threat_model.svg) | Likelihood × impact matrix for the known failure modes |
+| 15 | [`faq`](diagrams/15_faq.svg) | Wayfinding map from common questions to the doc that answers them |
 
 Each diagram ships as `.dot` (source), `.png`, and `.svg`. Re-render any of them with:
 
@@ -170,6 +182,25 @@ dot -Tsvg diagrams/01_goal_loop_architecture.dot -o diagrams/01_goal_loop_archit
 CI (`.github/workflows/verify-diagrams.yml`) re-renders every `.dot` on push/PR and fails if the
 committed SVG has drifted from its source.
 
+## Documentation
+
+Each doc below covers one angle in more depth than the README does, and carries its own dedicated
+diagram (05–15 in the table above continue from these, in the same order):
+
+| Doc | What it covers |
+|---|---|
+| [`docs/catch22.md`](docs/catch22.md) | Why the obvious fix (space out the nudges) trades off against the reason the nudges exist |
+| [`docs/howto.md`](docs/howto.md) | Step-by-step: telling a silently-deferred goal from a genuinely finished one |
+| [`docs/technical_rationale.md`](docs/technical_rationale.md) | Why each deferral path is a deliberate design choice, not a bug |
+| [`docs/why_this_repo_exists.md`](docs/why_this_repo_exists.md) | Why this is documentation (not a patch) and its own repo (not a subfolder) |
+| [`docs/known_unknowns.md`](docs/known_unknowns.md) | What's confirmed in logs vs. inferred vs. genuinely still open |
+| [`docs/future_directions.md`](docs/future_directions.md) | Concrete near-, mid-, and longer-term follow-ups |
+| [`docs/meta_loop_integrations.md`](docs/meta_loop_integrations.md) | How `/goal` relates to `/loop`, Kanban goal-mode cards, and heartbeat |
+| [`docs/API_socket_connectors.md`](docs/API_socket_connectors.md) | The client/socket mechanics behind the "stale stream, superseded" log line |
+| [`docs/glossary.md`](docs/glossary.md) | Core terms and how they relate to each other |
+| [`docs/threat_model.md`](docs/threat_model.md) | Operational/reliability risk matrix (explicitly not a security threat model) |
+| [`docs/faq.md`](docs/faq.md) | Short Q&A, each answer linking to the doc with the full version |
+
 ## Repo structure
 
 ```
@@ -180,7 +211,30 @@ committed SVG has drifted from its source.
 │   ├── 01_goal_loop_architecture.{dot,png,svg}
 │   ├── 02_deferral_decision_flow.{dot,png,svg}
 │   ├── 03_nudge_collision_sequence.{dot,png,svg}
-│   └── 04_model_interruption_comparison.{dot,png,svg}
+│   ├── 04_model_interruption_comparison.{dot,png,svg}
+│   ├── 05_catch22.{dot,png,svg}
+│   ├── 06_howto.{dot,png,svg}
+│   ├── 07_technical_rationale.{dot,png,svg}
+│   ├── 08_why_this_repo_exists.{dot,png,svg}
+│   ├── 09_known_unknowns.{dot,png,svg}
+│   ├── 10_future_directions.{dot,png,svg}
+│   ├── 11_meta_loop_integrations.{dot,png,svg}
+│   ├── 12_api_socket_connectors.{dot,png,svg}
+│   ├── 13_glossary.{dot,png,svg}
+│   ├── 14_threat_model.{dot,png,svg}
+│   └── 15_faq.{dot,png,svg}
+├── docs/
+│   ├── catch22.md
+│   ├── howto.md
+│   ├── technical_rationale.md
+│   ├── why_this_repo_exists.md
+│   ├── known_unknowns.md
+│   ├── future_directions.md
+│   ├── meta_loop_integrations.md
+│   ├── API_socket_connectors.md
+│   ├── glossary.md
+│   ├── threat_model.md
+│   └── faq.md
 ├── .github/workflows/verify-diagrams.yml
 ├── LICENSE
 └── README.md

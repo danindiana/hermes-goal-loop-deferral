@@ -1,0 +1,33 @@
+digraph howto {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="How to tell \"silently deferred\" from \"actually done\""];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.22,0.16",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    start [label="Goal loop seems\nto have stopped", shape=oval, color="#58a6ff", fillcolor="#13294d"];
+    check1 [label="Run /goal status", color="#39c5cf", fillcolor="#0d2e2e"];
+    r1 [label="Shows ⏸ paused?", shape=diamond, color="#d29922", fillcolor="#1f2937"];
+    a1 [label="It was auto-paused\n(interrupted turn).\n/goal resume to continue.", color="#3fb950", fillcolor="#12351f"];
+    r2 [label="Shows active,\nturns used < budget?", shape=diamond, color="#d29922", fillcolor="#1f2937"];
+    check2 [label="Check agent.log for the\nlast turn's outcome", color="#39c5cf", fillcolor="#0d2e2e"];
+    r3 [label="Last turn text\nempty/whitespace?", shape=diamond, color="#d29922", fillcolor="#1f2937"];
+    a3 [label="Judge was skipped by design.\nSend a real message or wait\nfor a non-empty turn.", color="#3fb950", fillcolor="#12351f"];
+    r4 [label="A nudge turn\n(skill/memory review)\ninjected instead?", shape=diamond, color="#d29922", fillcolor="#1f2937"];
+    a4 [label="Normal — continuation\nresumes once the nudge\nturn completes/supersedes.", color="#3fb950", fillcolor="#12351f"];
+    a5 [label="Genuinely done or blocked —\ncheck the judge's reason text\nin the ✓/🚫 status line.", color="#f0883e", fillcolor="#161b22"];
+
+    start -> check1 -> r1;
+    r1 -> a1 [label="yes", color="#f0883e"];
+    r1 -> r2 [label="no", color="#3fb950"];
+    r2 -> check2 [label="yes", color="#3fb950"];
+    r2 -> a5 [label="no (budget hit\nor done/blocked)", color="#f0883e"];
+    check2 -> r3;
+    r3 -> a3 [label="yes", color="#f0883e"];
+    r3 -> r4 [label="no", color="#3fb950"];
+    r4 -> a4 [label="yes", color="#f0883e"];
+    r4 -> a5 [label="no", color="#3fb950"];
+}
