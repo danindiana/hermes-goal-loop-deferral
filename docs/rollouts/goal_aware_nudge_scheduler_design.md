@@ -9,6 +9,12 @@
 *less*, they should fire *around* an active goal loop instead of *into* it. This rollout works
 that idea into an actual state machine.
 
+> **Refinement (round 3):** the "interval" here is described generically; the actual mechanism —
+> two separate counters with different units (tool iterations vs. turns), plus an
+> interruption gate — is read from source in
+> [`nudge_interval_source_reading.md`](nudge_interval_source_reading.md). The state machine below
+> still holds; that doc has the concrete detail an implementation would need.
+
 ## The design goal
 
 From [`../catch22.md`](../catch22.md): widening the nudge interval trades goal-loop reliability

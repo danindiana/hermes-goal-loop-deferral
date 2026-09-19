@@ -1,0 +1,30 @@
+digraph nudge_interval_source_reading {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Two different counters: skill nudge (iterations) vs. memory nudge (turns)"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.22,0.16",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    subgraph cluster_skill {
+        label="Skill-library nudge"; style="rounded"; color="#d29922"; fontcolor="#d29922";
+        s1 [label="_iters_since_skill\ncounts TOOL ITERATIONS,\nchecked at turn finalization\n(\"how many tool iterations\nTHIS turn used\")", color="#d29922", fillcolor="#1f2937"];
+        s2 [label="A single turn with heavy\ntool use (many execute_code\ncalls) can advance this\ncounter a LOT in one turn", color="#d29922", fillcolor="#1f2937"];
+    }
+
+    subgraph cluster_memory {
+        label="Memory nudge"; style="rounded"; color="#39c5cf"; fontcolor="#39c5cf";
+        m1 [label="_turns_since_memory\ncounts USER TURNS,\n+1 per turn regardless\nof tool-call volume", color="#39c5cf", fillcolor="#0d2e2e"];
+        m2 [label="Advances at a steady,\npredictable rate —\none per turn, always", color="#39c5cf", fillcolor="#0d2e2e"];
+    }
+
+    s1 -> s2; m1 -> m2;
+
+    gate [label="Both gated the same way:\nonly spawns if final_response\nis non-empty AND the turn\nwas NOT interrupted", shape=diamond, color="#3fb950", fillcolor="#12351f"];
+    s2 -> gate; m2 -> gate;
+
+    finding [label="Explains the original diagnosis:\nheavy tool-use goal loops rack up\ntool iterations fast → skill nudge\nfires far more often than memory\nnudge during exactly this workload —\nwhy the skill-library nudge was\nthe one observed colliding", shape=note, color="#f0883e", fillcolor="#161b22"];
+    gate -> finding [style=dashed];
+}

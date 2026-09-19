@@ -105,7 +105,7 @@ next steps once two of three surfaces (CLI, gateway) and Kanban are now characte
 2. **Selected: `nudge_interval_source_reading`.** Reason: the deep dive in round 2 explicitly
    flagged this as unread and load-bearing for
    `goal_aware_nudge_scheduler_design` (round 1) actually being implementable — closes a
-   dependency the design spec was written without. — Status: ⬜
+   dependency the design spec was written without. — Status: ✅ [`docs/rollouts/nudge_interval_source_reading.md`](rollouts/nudge_interval_source_reading.md) — found the skill and memory nudges count different units entirely (tool iterations vs. turns), explaining why the skill nudge was the one seen colliding.
 3. **Selected: `heartbeat_collision_check`.** Reason: independent of the other four, and the
    most natural remaining "does this other mechanism collide too" question left after nudges and
    Kanban have both been checked. — Status: ⬜
