@@ -35,7 +35,7 @@ Candidates proposed, each extending an open thread from the core docs (`future_d
    `known_unknowns.md`; independent of the two remaining design-spec items. — Status: ✅ [`docs/rollouts/vram_tag_comparison_protocol.md`](rollouts/vram_tag_comparison_protocol.md)
 4. **Selected: `goal_aware_nudge_scheduler_design`.** Reason: the more load-bearing of the two
    remaining design specs — it's the actual resolution `catch22.md` names, whereas the counter
-   mockup is a visibility nicety on top of whatever telemetry format rollout 1 defines. — Status: ⬜
+   mockup is a visibility nicety on top of whatever telemetry format rollout 1 defines. — Status: ✅ [`docs/rollouts/goal_aware_nudge_scheduler_design.md`](rollouts/goal_aware_nudge_scheduler_design.md)
 5. **Selected: `goal_status_deferral_counter_mockup`.** Reason: last by elimination, and
    naturally builds on rollout 1's telemetry vocabulary, which is now available. — Status: ⬜
 

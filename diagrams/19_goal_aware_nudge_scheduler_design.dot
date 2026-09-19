@@ -1,0 +1,25 @@
+digraph goal_aware_nudge_scheduler_design {
+    graph [bgcolor="#0d1117", rankdir=LR, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Proposed nudge scheduler state machine (goal-aware)"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.22,0.16",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    idle [label="IDLE\nwaiting for interval\nto elapse", color="#58a6ff", fillcolor="#13294d"];
+    due [label="DUE\ninterval elapsed,\nnudge wants to fire", color="#d29922", fillcolor="#1f2937"];
+    check [label="Is a goal continuation\nturn currently in flight\nfor this session?", shape=diamond, color="#d29922", fillcolor="#1f2937"];
+    fire [label="FIRE\ninject the nudge turn\nnormally, as today", color="#3fb950", fillcolor="#12351f"];
+    queued [label="QUEUED\nnudge held, does NOT\nreset the interval clock", color="#bc8cff", fillcolor="#241a3d"];
+    boundary [label="Next turn-boundary event\n(goal turn completes\nand is judged)", color="#39c5cf", fillcolor="#0d2e2e"];
+
+    idle -> due [label="interval elapses"];
+    due -> check;
+    check -> fire [label="no", color="#3fb950"];
+    check -> queued [label="yes", color="#f0883e"];
+    fire -> idle [label="reset interval", color="#8b949e"];
+    queued -> boundary [style=dashed, color="#bc8cff"];
+    boundary -> fire [label="fire now,\ninterval still\nfrom original due time", color="#bc8cff"];
+}
