@@ -1,0 +1,40 @@
+digraph deferral_telemetry_spec {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Proposed: a log line at each deferral point (currently: silence)"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.22,0.16",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    q1 [label="Interrupted turn?", shape=diamond, color="#d29922", fillcolor="#1f2937"];
+    q2 [label="Empty response?", shape=diamond, color="#d29922", fillcolor="#1f2937"];
+    q3 [label="Real user message\nqueued?", shape=diamond, color="#d29922", fillcolor="#1f2937"];
+    q4 [label="Nudge turn, not a\ngoal continuation?", shape=diamond, color="#d29922", fillcolor="#1f2937"];
+
+    subgraph cluster_now {
+        label="Today: nothing logged"; style="dashed,rounded"; color="#8b949e"; fontcolor="#8b949e";
+        now [label="(silence)", color="#8b949e", fillcolor="#161b22", fontcolor="#8b949e"];
+    }
+
+    subgraph cluster_proposed {
+        label="Proposed: one structured line per path"; style="rounded"; color="#3fb950"; fontcolor="#3fb950";
+        l1 [label="goal_deferral path=interrupted_turn\nsession=<id> cause=stream_superseded", color="#3fb950", fillcolor="#12351f", fontname="Courier"];
+        l2 [label="goal_deferral path=empty_response\nsession=<id>", color="#3fb950", fillcolor="#12351f", fontname="Courier"];
+        l3 [label="goal_deferral path=queued_user_msg\nsession=<id>", color="#3fb950", fillcolor="#12351f", fontname="Courier"];
+        l4 [label="goal_deferral path=nudge_collision\nsession=<id> nudge=<skill|memory>", color="#3fb950", fillcolor="#12351f", fontname="Courier"];
+    }
+
+    q1 -> now [label="today", color="#8b949e", style=dashed];
+    q1 -> l1 [label="proposed", color="#3fb950"];
+    q2 -> l2 [color="#3fb950"];
+    q3 -> l3 [color="#3fb950"];
+    q4 -> l4 [color="#3fb950"];
+
+    grep [label="Result: a future session\ngreps agent.log for\n\"goal_deferral\" and gets\nan exact timeline instantly", shape=note, color="#58a6ff", fillcolor="#13294d"];
+    l1 -> grep [style=invis];
+    l2 -> grep [style=invis];
+    l3 -> grep [style=invis];
+    l4 -> grep [style=invis];
+}

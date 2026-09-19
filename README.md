@@ -7,7 +7,7 @@
   <img alt="platform" src="https://img.shields.io/badge/platform-Linux-informational">
   <img alt="made-with-hermes" src="https://img.shields.io/badge/made%20with-Hermes%20Agent-8b5cf6">
   <img alt="made-with-ollama" src="https://img.shields.io/badge/made%20with-Ollama-000000">
-  <img alt="diagrams" src="https://img.shields.io/badge/diagrams-15%20%C3%97%202%20formats-orange">
+  <img alt="diagrams" src="https://img.shields.io/badge/diagrams-16%20%C3%97%202%20formats-orange">
   <img alt="rendered-with" src="https://img.shields.io/badge/rendered%20with-Graphviz-2e8b57">
   <a href="https://github.com/danindiana/hermes-goal-loop-deferral/actions/workflows/verify-diagrams.yml"><img alt="CI" src="https://github.com/danindiana/hermes-goal-loop-deferral/actions/workflows/verify-diagrams.yml/badge.svg"></a>
   <img alt="last-commit" src="https://img.shields.io/github/last-commit/danindiana/hermes-goal-loop-deferral">
@@ -37,6 +37,7 @@ turn boundaries, interruption events, and stream-drop messages — not a synthet
 - [Mitigation proposals](#mitigation-proposals)
 - [Diagrams](#diagrams)
 - [Documentation](#documentation)
+- [Rollouts](#rollouts)
 - [Repo structure](#repo-structure)
 - [License](#license)
 
@@ -200,6 +201,13 @@ diagram (05–15 in the table above continue from these, in the same order):
 | [`docs/glossary.md`](docs/glossary.md) | Core terms and how they relate to each other |
 | [`docs/threat_model.md`](docs/threat_model.md) | Operational/reliability risk matrix (explicitly not a security threat model) |
 | [`docs/faq.md`](docs/faq.md) | Short Q&A, each answer linking to the doc with the full version |
+
+## Rollouts
+
+Follow-up work beyond the core diagnosis is tracked as an explicit, auditable exploration process
+in [`docs/ROLLOUTS.md`](docs/ROLLOUTS.md) — candidates proposed per round, why each one was
+picked, and a link to the finished doc+diagram once complete. In progress; see that file for the
+current state.
 
 ## Repo structure
 
