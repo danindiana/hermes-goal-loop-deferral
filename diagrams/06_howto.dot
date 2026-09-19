@@ -10,7 +10,7 @@ digraph howto {
 
     start [label="Goal loop seems\nto have stopped", shape=oval, color="#58a6ff", fillcolor="#13294d"];
     check1 [label="Run /goal status", color="#39c5cf", fillcolor="#0d2e2e"];
-    r1 [label="Shows ⏸ paused?", shape=diamond, color="#d29922", fillcolor="#1f2937"];
+    r1 [label="Shows (paused)?", shape=diamond, color="#d29922", fillcolor="#1f2937"];
     a1 [label="It was auto-paused\n(interrupted turn).\n/goal resume to continue.", color="#3fb950", fillcolor="#12351f"];
     r2 [label="Shows active,\nturns used < budget?", shape=diamond, color="#d29922", fillcolor="#1f2937"];
     check2 [label="Check agent.log for the\nlast turn's outcome", color="#39c5cf", fillcolor="#0d2e2e"];
@@ -18,7 +18,7 @@ digraph howto {
     a3 [label="Judge was skipped by design.\nSend a real message or wait\nfor a non-empty turn.", color="#3fb950", fillcolor="#12351f"];
     r4 [label="A nudge turn\n(skill/memory review)\ninjected instead?", shape=diamond, color="#d29922", fillcolor="#1f2937"];
     a4 [label="Normal — continuation\nresumes once the nudge\nturn completes/supersedes.", color="#3fb950", fillcolor="#12351f"];
-    a5 [label="Genuinely done or blocked —\ncheck the judge's reason text\nin the ✓/🚫 status line.", color="#f0883e", fillcolor="#161b22"];
+    a5 [label="Genuinely done or blocked —\ncheck the judge's reason text\nin the done/blocked status line.", color="#f0883e", fillcolor="#161b22"];
 
     start -> check1 -> r1;
     r1 -> a1 [label="yes", color="#f0883e"];

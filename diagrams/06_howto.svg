@@ -32,8 +32,8 @@
 <!-- r1 -->
 <g id="node3" class="node">
 <title>r1</title>
-<path fill="#1f2937" stroke="#d29922" stroke-width="2" d="M312.35,-793.14C312.35,-793.14 176.65,-759.86 176.65,-759.86 170.83,-758.43 170.83,-755.57 176.65,-754.14 176.65,-754.14 312.35,-720.86 312.35,-720.86 318.17,-719.43 329.83,-719.43 335.65,-720.86 335.65,-720.86 471.35,-754.14 471.35,-754.14 477.17,-755.57 477.17,-758.43 471.35,-759.86 471.35,-759.86 335.65,-793.14 335.65,-793.14 329.83,-794.57 318.17,-794.57 312.35,-793.14"/>
-<text text-anchor="middle" x="324" y="-753.3" font-family="Helvetica,sans-Serif" font-size="14.00" fill="#e6edf3">Shows ⏸ paused?</text>
+<path fill="#1f2937" stroke="#d29922" stroke-width="2" d="M312.38,-793C312.38,-793 184.62,-760 184.62,-760 178.81,-758.5 178.81,-755.5 184.62,-754 184.62,-754 312.38,-721 312.38,-721 318.19,-719.5 329.81,-719.5 335.62,-721 335.62,-721 463.38,-754 463.38,-754 469.19,-755.5 469.19,-758.5 463.38,-760 463.38,-760 335.62,-793 335.62,-793 329.81,-794.5 318.19,-794.5 312.38,-793"/>
+<text text-anchor="middle" x="324" y="-753.3" font-family="Helvetica,sans-Serif" font-size="14.00" fill="#e6edf3">Shows (paused)?</text>
 </g>
 <!-- check1&#45;&gt;r1 -->
 <g id="edge2" class="edge">
@@ -66,8 +66,8 @@
 <!-- r1&#45;&gt;r2 -->
 <g id="edge4" class="edge">
 <title>r1&#45;&gt;r2</title>
-<path fill="none" stroke="#3fb950" stroke-width="1.6" d="M375.1,-730.45C419.05,-708.48 483.03,-676.48 532.82,-651.59"/>
-<polygon fill="#3fb950" stroke="#3fb950" stroke-width="1.6" points="534.36,-654.34 541,-647.5 531.54,-648.71 534.36,-654.34"/>
+<path fill="none" stroke="#3fb950" stroke-width="1.6" d="M374.12,-730.94C418.09,-708.95 482.66,-676.67 532.82,-651.59"/>
+<polygon fill="#3fb950" stroke="#3fb950" stroke-width="1.6" points="534.42,-654.31 541.06,-647.47 531.6,-648.68 534.42,-654.31"/>
 <text text-anchor="middle" x="475" y="-688.8" font-family="Helvetica,sans-Serif" font-size="14.00" fill="#adbac7">no</text>
 </g>
 <!-- check2 -->
@@ -87,10 +87,10 @@
 <!-- a5 -->
 <g id="node11" class="node">
 <title>a5</title>
-<path fill="#161b22" stroke="#f0883e" stroke-width="2" d="M756.5,-69C756.5,-69 543.5,-69 543.5,-69 537.5,-69 531.5,-63 531.5,-57 531.5,-57 531.5,-12 531.5,-12 531.5,-6 537.5,0 543.5,0 543.5,0 756.5,0 756.5,0 762.5,0 768.5,-6 768.5,-12 768.5,-12 768.5,-57 768.5,-57 768.5,-63 762.5,-69 756.5,-69"/>
+<path fill="#161b22" stroke="#f0883e" stroke-width="2" d="M763,-69C763,-69 537,-69 537,-69 531,-69 525,-63 525,-57 525,-57 525,-12 525,-12 525,-6 531,0 537,0 537,0 763,0 763,0 769,0 775,-6 775,-12 775,-12 775,-57 775,-57 775,-63 769,-69 763,-69"/>
 <text text-anchor="middle" x="650" y="-45.8" font-family="Helvetica,sans-Serif" font-size="14.00" fill="#e6edf3">Genuinely done or blocked —</text>
 <text text-anchor="middle" x="650" y="-30.8" font-family="Helvetica,sans-Serif" font-size="14.00" fill="#e6edf3">check the judge&#39;s reason text</text>
-<text text-anchor="middle" x="650" y="-15.8" font-family="Helvetica,sans-Serif" font-size="14.00" fill="#e6edf3">in the ✓/🚫 status line.</text>
+<text text-anchor="middle" x="650" y="-15.8" font-family="Helvetica,sans-Serif" font-size="14.00" fill="#e6edf3">in the done/blocked status line.</text>
 </g>
 <!-- r2&#45;&gt;a5 -->
 <g id="edge6" class="edge">
@@ -146,17 +146,17 @@
 <!-- a4 -->
 <g id="node10" class="node">
 <title>a4</title>
-<path fill="#12351f" stroke="#3fb950" stroke-width="2" d="M501,-69C501,-69 299,-69 299,-69 293,-69 287,-63 287,-57 287,-57 287,-12 287,-12 287,-6 293,0 299,0 299,0 501,0 501,0 507,0 513,-6 513,-12 513,-12 513,-57 513,-57 513,-63 507,-69 501,-69"/>
-<text text-anchor="middle" x="400" y="-45.8" font-family="Helvetica,sans-Serif" font-size="14.00" fill="#e6edf3">Normal — continuation</text>
-<text text-anchor="middle" x="400" y="-30.8" font-family="Helvetica,sans-Serif" font-size="14.00" fill="#e6edf3">resumes once the nudge</text>
-<text text-anchor="middle" x="400" y="-15.8" font-family="Helvetica,sans-Serif" font-size="14.00" fill="#e6edf3">turn completes/supersedes.</text>
+<path fill="#12351f" stroke="#3fb950" stroke-width="2" d="M495,-69C495,-69 293,-69 293,-69 287,-69 281,-63 281,-57 281,-57 281,-12 281,-12 281,-6 287,0 293,0 293,0 495,0 495,0 501,0 507,-6 507,-12 507,-12 507,-57 507,-57 507,-63 501,-69 495,-69"/>
+<text text-anchor="middle" x="394" y="-45.8" font-family="Helvetica,sans-Serif" font-size="14.00" fill="#e6edf3">Normal — continuation</text>
+<text text-anchor="middle" x="394" y="-30.8" font-family="Helvetica,sans-Serif" font-size="14.00" fill="#e6edf3">resumes once the nudge</text>
+<text text-anchor="middle" x="394" y="-15.8" font-family="Helvetica,sans-Serif" font-size="14.00" fill="#e6edf3">turn completes/supersedes.</text>
 </g>
 <!-- r4&#45;&gt;a4 -->
 <g id="edge10" class="edge">
 <title>r4&#45;&gt;a4</title>
-<path fill="none" stroke="#f0883e" stroke-width="1.6" d="M423.73,-125.97C419.5,-109.86 415.05,-92.86 411.15,-78.01"/>
-<polygon fill="#f0883e" stroke="#f0883e" stroke-width="1.6" points="414.13,-76.97 408.8,-69.06 408.04,-78.57 414.13,-76.97"/>
-<text text-anchor="middle" x="429.5" y="-90.8" font-family="Helvetica,sans-Serif" font-size="14.00" fill="#adbac7">yes</text>
+<path fill="none" stroke="#f0883e" stroke-width="1.6" d="M421.56,-126.85C416.58,-110.36 411.31,-92.9 406.73,-77.7"/>
+<polygon fill="#f0883e" stroke="#f0883e" stroke-width="1.6" points="409.73,-76.75 404.12,-69.04 403.7,-78.57 409.73,-76.75"/>
+<text text-anchor="middle" x="425.5" y="-90.8" font-family="Helvetica,sans-Serif" font-size="14.00" fill="#adbac7">yes</text>
 </g>
 <!-- r4&#45;&gt;a5 -->
 <g id="edge11" class="edge">
