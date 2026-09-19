@@ -1,0 +1,35 @@
+digraph cli_gateway_hook_parity_audit {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="CLI hook vs. gateway hook: shared, differs, and unconfirmed"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.2,0.15",
+           fillcolor="#161b22"];
+    edge  [style=invis];
+
+    subgraph cluster_shared {
+        label="Shared (confirmed identical in both)"; style="rounded"; color="#3fb950"; fontcolor="#3fb950";
+        s1 [label="Checks goal manager\nis_active() first", color="#3fb950", fillcolor="#12351f"];
+        s2 [label="Skips judging on\nempty/whitespace response", color="#3fb950", fillcolor="#12351f"];
+        s3 [label="Gathers this session's\nbackground processes +\nactive delegation count", color="#3fb950", fillcolor="#12351f"];
+        s4 [label="Excludes subagents' own\npollers via owner_task_id", color="#3fb950", fillcolor="#12351f"];
+        s1 -> s2 -> s3 -> s4 [style=invis];
+        {rank=same; s1; s2; s3; s4;}
+    }
+
+    subgraph cluster_differs {
+        label="Differs (confirmed in source)"; style="rounded"; color="#f0883e"; fontcolor="#f0883e";
+        d1 [label="CLI: explicit interrupted-turn\ncheck auto-pauses the goal", color="#f0883e", fillcolor="#161b22"];
+        d2 [label="Gateway: no equivalent\nexplicit interrupted-turn\ncheck found in this hook", color="#f0883e", fillcolor="#161b22"];
+        d1 -> d2 [style=invis];
+        {rank=same; d1; d2;}
+    }
+
+    subgraph cluster_unconfirmed {
+        label="Unconfirmed either way (open question)"; style="dashed,rounded"; color="#d29922"; fontcolor="#d29922";
+        u1 [label="Neither hook has an explicit\n\"is this a nudge turn\" check —\nthe nudge collision looks like\na race with a separate\nbackground-review subsystem,\nnot a hook-level branch,\non both surfaces", color="#d29922", fillcolor="#1f2937"];
+    }
+
+    s4 -> d1 [style=invis, minlen=2];
+    d2 -> u1 [style=invis, minlen=2];
+}
