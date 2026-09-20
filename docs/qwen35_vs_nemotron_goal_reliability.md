@@ -1,5 +1,11 @@
 # Why `qwen3.5:9b-vram-fit` seems to "miss" the goal-continuation nudge while `nemotron-3.5-lightning:1m` catches it reliably
 
+> **Update (live-confirmed, same evening): `/reasoning none` eliminates the failure mode
+> entirely.** See [the section below](#reasoning-none-eliminates-the-failure-mode-live-confirmed)
+> — 0 reasoning-only stalls across 40+ tool turns with reasoning off, vs. 8 stalls in ~40 minutes
+> of the same live session with it on. This is the strongest, most actionable finding on this
+> page.
+
 **Question:** operating both models side by side, `qwen3.5:9b-vram-fit` unreliably picks up
 `/goal`'s continuation nudge, while `nemotron-3.5-lightning:1m` catches it reliably. Why?
 
@@ -177,8 +183,45 @@ signal, not a proven effect. It's also a single task shape; it doesn't establish
 generalizes to other task types. But the mechanism lines up cleanly with the hypothesis (a real
 mid-task reasoning-only stall, at real depth, only in the baseline arm).
 
+## `/reasoning none` eliminates the failure mode — live-confirmed
+
+Found in real use, not a planned test — running a live interactive session on
+`qwen3.5:9b-vram-fit-pp0` doing real work, the operator hit **8 reasoning-only stalls in the first
+~40 minutes**, requiring manual re-prompts each time (frequency escalating to one every ~20-30
+seconds by the end). Turning reasoning off entirely (`/reasoning none`) and then invoking `/goal`
+for the first time in that session: **287 consecutive judge calls, 0 reasoning-only stalls,
+reaching tool_turns=40+** — well past the depth where every prior stall in this investigation
+occurred.
+
+**Mechanism, confirmed in source:** `/reasoning none` is not a no-op for local Ollama, despite an
+earlier finding that graded effort levels (low/medium/high) don't forward there.
+`plugins/model-providers/custom/__init__.py`'s `CustomProfile.build_api_kwargs_extras`
+special-cases `effort=="none"` — on an Ollama endpoint it sends `extra_body["think"]=False`, which
+Ollama's native API honors directly, fully disabling the model's thinking channel. With no
+thinking channel, "reasoning-only clean stop" (non-empty reasoning + empty content) becomes
+structurally unreachable — there's nowhere for the model to strand an answer.
+
+**Why this is stronger than the `presence_penalty` result above:** that A/B test found a
+*directional* reduction at n=3 per arm — real, but small-sample. This is a complete elimination
+(0/287 vs. 8 incidents), confirmed at real depth, in a real unplanned session — not inferred from
+a correlation, but a direct demonstration of the mechanism (no thinking channel → no
+reasoning-only state possible).
+
+**Trade-off, not evaluated:** disabling reasoning entirely removes whatever quality benefit
+thinking mode provides on genuinely hard problems — no data here on whether task *correctness*
+(not just goal-loop liveness) suffers. `presence_penalty=0` is a softer intervention that keeps
+thinking intact; the two aren't mutually exclusive.
+
+**Practical recommendation:** run `/reasoning none` before starting a `/goal` loop on
+`qwen3.5:9b-vram-fit-pp0` (or any local-Ollama-backed model) when loop liveness matters more than
+reasoning-assisted quality for that task. It's a per-session runtime toggle, not a Modelfile
+change.
+
 ## What this page does not claim
 
+- It does not claim `/reasoning none` is free — no data on whether task correctness suffers
+  without a thinking channel on genuinely hard problems. What's confirmed is goal-loop
+  *liveness*, not output quality.
 - It does not claim `presence_penalty=1.5` is *proven* to cause mid-task reasoning-only stalls —
   the real multi-turn A/B test found a clean directional signal at n=3 per arm, not a
   statistically robust result. Treat this as "worth adopting `pp0` as a trial default and
