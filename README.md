@@ -286,6 +286,7 @@ diagram (05–15 in the table above continue from these, in the same order):
 | [`docs/fix_vs_diagnosis_repo_relationship.md`](docs/fix_vs_diagnosis_repo_relationship.md) | Why 01–30 didn't need rewriting |
 | [`docs/fork_and_publish_pathway.md`](docs/fork_and_publish_pathway.md) | The exact `gh`/`git` commands used to publish the real diff |
 | [`docs/open_items_and_followups.md`](docs/open_items_and_followups.md) | Scope decisions and genuine remaining gaps |
+| [`docs/qwen35_vs_nemotron_goal_reliability.md`](docs/qwen35_vs_nemotron_goal_reliability.md) | A separate model-layer investigation: why `qwen3.5:9b-vram-fit` seems less reliable at catching the nudge than `nemotron-3.5-lightning:1m` — reasoning-only clean stops, not interruptions, plus a real `presence_penalty` A/B test |
 
 ## Rollouts
 
@@ -371,6 +372,7 @@ every pick's reasoning, and links to all fifteen finished pieces in
 │   ├── fix_vs_diagnosis_repo_relationship.md
 │   ├── fork_and_publish_pathway.md
 │   ├── open_items_and_followups.md
+│   ├── qwen35_vs_nemotron_goal_reliability.md
 │   └── rollouts/
 │       ├── deferral_telemetry_spec.md
 │       ├── cli_gateway_hook_parity_audit.md
