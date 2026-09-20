@@ -33,5 +33,14 @@ jobs:
             fi
             # PNG is not byte-stable across Graphviz builds; smoke-test only.
             dot -Tpng "$dotfile" -o "$tmppng"
+            mkdir -p /tmp/ci-rendered/diagrams
+            cp "$tmpsvg" "/tmp/ci-rendered/${base}.svg"
           done
           exit $fail
+
+      - name: Upload CI-rendered SVGs (debug, temporary)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-rendered-svgs
+          path: /tmp/ci-rendered/diagrams/
