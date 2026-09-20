@@ -227,7 +227,10 @@ thinking intact; the two aren't mutually exclusive.
 **Practical recommendation:** run `/reasoning none` before starting a `/goal` loop on
 `qwen3.5:9b-vram-fit-pp0` (or any local-Ollama-backed model) when loop liveness matters more than
 reasoning-assisted quality for that task. It's a per-session runtime toggle, not a Modelfile
-change.
+change — and it does **not** carry over to a new session: a fresh `hermes` process reproduced the
+original failure (3 stalls in ~3 minutes) until `/reasoning none` was run again, confirming the
+fix a second time, independently, on demand. To make it the default instead of a per-session
+reminder, set `agent.reasoning_effort: none` in `config.yaml`.
 
 <p align="center">
   <img src="../diagrams/46_practical_recommendation_flow.svg" alt="Decision flow: when to disable reasoning before a /goal loop" width="850">
