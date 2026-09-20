@@ -1,0 +1,35 @@
+digraph live_before_after_reasoning_toggle {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Real live session, same box, same model: reasoning on vs off (not a synthetic test)"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.25,0.18",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    subgraph cluster_before {
+        label="~40 minutes, reasoning ON (default)"; style="dashed"; color="#f85149"; fontcolor="#f85149";
+        b1 [label="22:27 session starts\nplain chat, real dev work\n(g01_listeners webhook project)", color="#adbac7", fillcolor="#161b22"];
+        b2 [label="8 reasoning-only stalls\ntool_turns 5, 10, 13, 23, 15, 16, 21, 23", color="#f0883e", fillcolor="#161b22"];
+        b3 [label="frequency escalating:\nminutes apart -> ~20-30s apart", color="#f85149", fillcolor="#161b22"];
+        b4 [label="operator manually retyping\n'continue' / 'proceed' every time\nNO /goal invoked yet", color="#f85149", fillcolor="#161b22", penwidth=3];
+        b5 [label="real tool errors compound it\n(missing fixture file, ModuleNotFoundError)", color="#f85149", fillcolor="#161b22"];
+    }
+
+    subgraph cluster_after {
+        label="From 23:05, reasoning OFF (/reasoning none)"; style="dashed"; color="#3fb950"; fontcolor="#3fb950";
+        a1 [label="23:05:35 /goal invoked for\nthe first time this session", color="#58a6ff", fillcolor="#13294d"];
+        a2 [label="goal judge fires every ~5-6s\nverdict=continue, real progress each time", color="#3fb950", fillcolor="#1f2937"];
+        a3 [label="287 consecutive judge calls", color="#3fb950", fillcolor="#1f2937"];
+        a4 [label="tool_turns reaches 40+\n(past every prior stall depth)", color="#39c5cf", fillcolor="#0d2e2e"];
+        a5 [label="0 reasoning-only stalls", shape=oval, color="#3fb950", fillcolor="#12351f", penwidth=3];
+    }
+
+    b1 -> b2 -> b3 -> b4 -> b5;
+    a1 -> a2 -> a3 -> a4 -> a5;
+
+    note [label="Same session, same model, same box.\nOnly variable that changed: /reasoning none.", shape=note, fontcolor="#d29922", color="#d29922"];
+    b5 -> note [style=dotted, dir=none, color="#d29922"];
+    note -> a1 [style=dotted, color="#d29922"];
+}

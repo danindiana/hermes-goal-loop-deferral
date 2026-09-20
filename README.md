@@ -7,7 +7,7 @@
   <img alt="platform" src="https://img.shields.io/badge/platform-Linux-informational">
   <img alt="made-with-hermes" src="https://img.shields.io/badge/made%20with-Hermes%20Agent-8b5cf6">
   <img alt="made-with-ollama" src="https://img.shields.io/badge/made%20with-Ollama-000000">
-  <img alt="diagrams" src="https://img.shields.io/badge/diagrams-42%20%C3%97%202%20formats-orange">
+  <img alt="diagrams" src="https://img.shields.io/badge/diagrams-46%20%C3%97%202%20formats-orange">
   <img alt="rendered-with" src="https://img.shields.io/badge/rendered%20with-Graphviz-2e8b57">
   <a href="https://github.com/danindiana/hermes-goal-loop-deferral/actions/workflows/verify-diagrams.yml"><img alt="CI" src="https://github.com/danindiana/hermes-goal-loop-deferral/actions/workflows/verify-diagrams.yml/badge.svg"></a>
   <img alt="last-commit" src="https://img.shields.io/github/last-commit/danindiana/hermes-goal-loop-deferral">
@@ -245,6 +245,10 @@ diagrams: 31–42 in the table below, with `docs/` write-ups for each.
 | 40 | [`fix_vs_diagnosis_repo_relationship`](diagrams/40_fix_vs_diagnosis_repo_relationship.svg) | How this addendum extends diagrams 01–30 without rewriting them |
 | 41 | [`fork_and_publish_pathway`](diagrams/41_fork_and_publish_pathway.svg) | Local commits → fork → branch → public compare URL |
 | 42 | [`open_items_and_followups`](diagrams/42_open_items_and_followups.svg) | What's deliberately unchanged, and genuine follow-ups |
+| 43 | [`reasoning_none_mechanism`](diagrams/43_reasoning_none_mechanism.svg) | Why `/reasoning none` (not low/medium/high) reaches local Ollama's `think` flag |
+| 44 | [`live_before_after_reasoning_toggle`](diagrams/44_live_before_after_reasoning_toggle.svg) | Real live-session timeline: 8 stalls/40min (on) vs 0/287 calls (off) |
+| 45 | [`intervention_comparison`](diagrams/45_intervention_comparison.svg) | `presence_penalty=0` (directional) vs `/reasoning none` (structural elimination) |
+| 46 | [`practical_recommendation_flow`](diagrams/46_practical_recommendation_flow.svg) | Decision flow: when to disable reasoning before a `/goal` loop |
 
 Each diagram ships as `.dot` (source), `.png`, and `.svg`. Re-render any of them with:
 
@@ -346,7 +350,11 @@ every pick's reasoning, and links to all fifteen finished pieces in
 │   ├── 39_commit_and_test_map.{dot,png,svg}
 │   ├── 40_fix_vs_diagnosis_repo_relationship.{dot,png,svg}
 │   ├── 41_fork_and_publish_pathway.{dot,png,svg}
-│   └── 42_open_items_and_followups.{dot,png,svg}
+│   ├── 42_open_items_and_followups.{dot,png,svg}
+│   ├── 43_reasoning_none_mechanism.{dot,png,svg}
+│   ├── 44_live_before_after_reasoning_toggle.{dot,png,svg}
+│   ├── 45_intervention_comparison.{dot,png,svg}
+│   └── 46_practical_recommendation_flow.{dot,png,svg}
 ├── docs/
 │   ├── ROLLOUTS.md
 │   ├── catch22.md

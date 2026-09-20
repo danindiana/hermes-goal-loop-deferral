@@ -185,6 +185,10 @@ mid-task reasoning-only stall, at real depth, only in the baseline arm).
 
 ## `/reasoning none` eliminates the failure mode — live-confirmed
 
+<p align="center">
+  <img src="../diagrams/44_live_before_after_reasoning_toggle.svg" alt="Real live-session timeline: 8 stalls/40min (reasoning on) vs 0/287 calls (reasoning off)" width="850">
+</p>
+
 Found in real use, not a planned test — running a live interactive session on
 `qwen3.5:9b-vram-fit-pp0` doing real work, the operator hit **8 reasoning-only stalls in the first
 ~40 minutes**, requiring manual re-prompts each time (frequency escalating to one every ~20-30
@@ -193,6 +197,10 @@ for the first time in that session: **287 consecutive judge calls, 0 reasoning-o
 reaching tool_turns=40+** — well past the depth where every prior stall in this investigation
 occurred.
 
+<p align="center">
+  <img src="../diagrams/43_reasoning_none_mechanism.svg" alt="Why /reasoning none (not low/medium/high) reaches local Ollama's think flag" width="850">
+</p>
+
 **Mechanism, confirmed in source:** `/reasoning none` is not a no-op for local Ollama, despite an
 earlier finding that graded effort levels (low/medium/high) don't forward there.
 `plugins/model-providers/custom/__init__.py`'s `CustomProfile.build_api_kwargs_extras`
@@ -200,6 +208,10 @@ special-cases `effort=="none"` — on an Ollama endpoint it sends `extra_body["t
 Ollama's native API honors directly, fully disabling the model's thinking channel. With no
 thinking channel, "reasoning-only clean stop" (non-empty reasoning + empty content) becomes
 structurally unreachable — there's nowhere for the model to strand an answer.
+
+<p align="center">
+  <img src="../diagrams/45_intervention_comparison.svg" alt="presence_penalty=0 (directional) vs reasoning none (structural elimination)" width="850">
+</p>
 
 **Why this is stronger than the `presence_penalty` result above:** that A/B test found a
 *directional* reduction at n=3 per arm — real, but small-sample. This is a complete elimination
@@ -216,6 +228,10 @@ thinking intact; the two aren't mutually exclusive.
 `qwen3.5:9b-vram-fit-pp0` (or any local-Ollama-backed model) when loop liveness matters more than
 reasoning-assisted quality for that task. It's a per-session runtime toggle, not a Modelfile
 change.
+
+<p align="center">
+  <img src="../diagrams/46_practical_recommendation_flow.svg" alt="Decision flow: when to disable reasoning before a /goal loop" width="850">
+</p>
 
 ## What this page does not claim
 

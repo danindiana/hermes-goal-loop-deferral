@@ -1,0 +1,32 @@
+digraph practical_recommendation_flow {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Practical guidance: what to do before a long /goal loop on a local Ollama model"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.25,0.18",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    start [label="About to run a long /goal loop\non a local Ollama model", shape=oval, color="#58a6ff", fillcolor="#13294d"];
+
+    q1 [label="Does this task need genuine\nmulti-step reasoning for CORRECTNESS?\n(hard logic, not just tool orchestration)", shape=diamond, color="#d29922", fillcolor="#1f2937"];
+
+    keep_thinking [label="Keep thinking mode on.\nConsider presence_penalty=0 derived tag\n(smaller, unproven-at-scale mitigation)\nfor mid-task reasoning-only stalls.", color="#f0883e", fillcolor="#161b22"];
+
+    q2 [label="Is loop LIVENESS (not stalling,\nfinishing the goal) the priority?", shape=diamond, color="#d29922", fillcolor="#1f2937"];
+
+    run_none [label="/reasoning none\nbefore /goal <task>", color="#3fb950", fillcolor="#1f2937", penwidth=3];
+
+    outcome [label="Live-confirmed: reasoning-only stalls\nbecome structurally unreachable\n(0/287 in the real session that found this)", shape=oval, color="#3fb950", fillcolor="#12351f", penwidth=3];
+
+    check [label="Also always check: was /goal\nACTUALLY invoked this session?\ngrep agent.log turn_context for a real\n'/goal ...' msg -- not just goal-\nadjacent phrasing you typed yourself.", shape=note, color="#39c5cf", fontcolor="#39c5cf"];
+
+    start -> q1;
+    q1 -> keep_thinking [label="yes", color="#f0883e"];
+    q1 -> q2 [label="no / tool-heavy task", color="#3fb950"];
+    q2 -> run_none [label="yes", color="#3fb950"];
+    q2 -> keep_thinking [label="no, correctness matters more", color="#f0883e"];
+    run_none -> outcome;
+    start -> check [style=dotted, color="#39c5cf"];
+}

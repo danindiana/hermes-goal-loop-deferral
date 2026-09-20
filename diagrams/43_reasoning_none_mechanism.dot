@@ -1,0 +1,39 @@
+digraph reasoning_none_mechanism {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Why /reasoning none (not low/medium/high) actually reaches local Ollama"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.25,0.18",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    cmd [label="operator runs /reasoning none", shape=oval, color="#58a6ff", fillcolor="#13294d"];
+
+    subgraph cluster_graded {
+        label="Graded efforts: low / medium / high"; style="dashed"; color="#f0883e"; fontcolor="#f0883e";
+        graded [label="reasoning_config.effort = 'low' | 'medium' | 'high'", color="#f0883e", fillcolor="#161b22"];
+        excluded [label="agent/reasoning_params.py:\n_supports_reasoning_extra_body excludes\nlocalhost:11434 (local Ollama)", color="#f85149", fillcolor="#161b22"];
+        noop [label="no-op for local Ollama\n(still true, unchanged)", shape=oval, color="#f85149", fillcolor="#1f2937"];
+    }
+
+    subgraph cluster_none {
+        label="Fully-disabled: none"; style="dashed"; color="#3fb950"; fontcolor="#3fb950";
+        none_effort [label="reasoning_config.effort == 'none'\nor reasoning_config.enabled == False", color="#3fb950", fillcolor="#1f2937"];
+        special_case [label="plugins/model-providers/custom/__init__.py\nCustomProfile.build_api_kwargs_extras():\nspecial-cased branch", color="#3fb950", fillcolor="#1f2937", penwidth=3];
+        endpoint_check [label="_looks_like_ollama_endpoint(base_url)?", shape=diamond, color="#d29922", fillcolor="#1f2937"];
+        think_false [label="extra_body['think'] = False", color="#39c5cf", fillcolor="#0d2e2e", penwidth=3];
+        ollama_native [label="Ollama's native API honors\nthink=false directly", color="#39c5cf", fillcolor="#0d2e2e"];
+        no_channel [label="model has NO separate\nthinking/reasoning output channel", shape=oval, color="#3fb950", fillcolor="#12351f", penwidth=3];
+    }
+
+    unreachable [label="'reasoning-only clean stop' classification\n(non-empty reasoning + empty content)\nbecomes STRUCTURALLY UNREACHABLE", shape=oval, color="#58a6ff", fillcolor="#13294d", penwidth=3];
+
+    cmd -> graded [style=dashed, color="#f0883e", label="  (graded case,\n  for contrast)"];
+    graded -> excluded -> noop;
+
+    cmd -> none_effort [color="#3fb950"];
+    none_effort -> special_case -> endpoint_check;
+    endpoint_check -> think_false [label="yes", color="#3fb950"];
+    think_false -> ollama_native -> no_channel -> unreachable;
+}

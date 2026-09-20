@@ -1,0 +1,36 @@
+digraph intervention_comparison {
+    graph [bgcolor="#0d1117", rankdir=LR, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Two interventions tried tonight: directional reduction vs. structural elimination"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.25,0.18",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    subgraph cluster_pp0 {
+        label="Intervention A: presence_penalty=0"; style="dashed"; color="#f0883e"; fontcolor="#f0883e";
+        pp0_what [label="softer sampling tweak\nthinking channel stays intact", color="#f0883e", fillcolor="#161b22"];
+        pp0_test [label="real multi-turn A/B,\nn=3 runs per arm", color="#f0883e", fillcolor="#161b22"];
+        pp0_result [label="0/3 mid-task stalls (pp0)\nvs 1/3 runs (baseline)", color="#d29922", fillcolor="#1f2937"];
+        pp0_verdict [label="directional signal,\nNOT statistically robust\n(one run drives the gap)", shape=oval, color="#d29922", fillcolor="#1f2937", penwidth=3];
+    }
+
+    subgraph cluster_reasoning {
+        label="Intervention B: /reasoning none"; style="dashed"; color="#3fb950"; fontcolor="#3fb950";
+        rn_what [label="removes the thinking channel\nentirely for that request", color="#3fb950", fillcolor="#1f2937"];
+        rn_test [label="real live session,\nunplanned, not a controlled test", color="#3fb950", fillcolor="#1f2937"];
+        rn_result [label="0/287 stalls (off)\nvs 8 incidents/40min (on)", color="#3fb950", fillcolor="#1f2937"];
+        rn_verdict [label="complete elimination,\nmechanism directly demonstrated\n(no channel = no stall state possible)", shape=oval, color="#3fb950", fillcolor="#12351f", penwidth=3];
+    }
+
+    tradeoff [label="Trade-off, unevaluated:\ndoes task CORRECTNESS suffer\nwithout a thinking channel\non genuinely hard problems?", shape=note, color="#f85149", fillcolor="#161b22"];
+
+    pp0_what -> pp0_test -> pp0_result -> pp0_verdict;
+    rn_what -> rn_test -> rn_result -> rn_verdict;
+    rn_verdict -> tradeoff [style=dashed, color="#f85149"];
+
+    not_exclusive [label="Not mutually exclusive --\ncould combine both", shape=note, fontcolor="#39c5cf", color="#39c5cf"];
+    pp0_verdict -> not_exclusive [style=dotted, dir=none, color="#39c5cf"];
+    rn_verdict -> not_exclusive [style=dotted, dir=none, color="#39c5cf"];
+}
