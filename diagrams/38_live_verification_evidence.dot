@@ -1,0 +1,32 @@
+digraph live_verification_evidence {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Real agent.log evidence: the bug, then the same repro against the patched code"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.25,0.18",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    cmd [label="hermes chat -q \"/goal <task>\"\n--format stream-json --run-budget 240", shape=box, color="#58a6ff", fillcolor="#13294d"];
+
+    subgraph cluster_before {
+        label="Session 20260919_174625_45f1af (before)"; style="dashed"; color="#f85149"; fontcolor="#f85149";
+        b1 [label="turn_context: msg='/goal In\n/workspace/... create three files...'\n(logged verbatim — never parsed as a command)", fontcolor="#adbac7", shape=note];
+        b2 [label="9 API calls, 8 tool turns,\nfiles created correctly", fontcolor="#adbac7", shape=note];
+        b3 [label="grep 'goal' agent.log for this session:\nhermes_cli.goals — 0 matches\nAuxiliary goal_judge — 0 matches", color="#f85149", fillcolor="#161b22", penwidth=3];
+        b4 [label="Looks like success.\nGoal loop never engaged.", shape=oval, color="#f85149", fillcolor="#1f2937"];
+    }
+
+    subgraph cluster_after {
+        label="Session 20260919_182928_b02cf1 (after, same repro)"; style="dashed"; color="#3fb950"; fontcolor="#3fb950";
+        a1 [label="agent.auxiliary_client: Auxiliary\ngoal_judge: using anthropic\n(claude-haiku-4-5-20251001)", color="#39c5cf", fillcolor="#0d2e2e"];
+        a2 [label="hermes_cli.goals: goal judge:\nverdict=done reason='The agent\ncreated three files ... read them\nback ...'", color="#3fb950", fillcolor="#1f2937"];
+        a3 [label="cli: cli goal loop: status=done\nverdict=done", color="#3fb950", fillcolor="#1f2937"];
+        a4 [label="stream-json result.text:\n'✓ Goal done (1/20 turns): ...'", color="#3fb950", fillcolor="#12351f", penwidth=3];
+        a5 [label="Goal loop genuinely engaged\nand terminated correctly.", shape=oval, color="#3fb950", fillcolor="#12351f", penwidth=3];
+    }
+
+    cmd -> b1 -> b2 -> b3 -> b4;
+    cmd -> a1 -> a2 -> a3 -> a4 -> a5;
+}

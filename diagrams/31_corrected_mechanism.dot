@@ -1,0 +1,34 @@
+digraph corrected_mechanism {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Building on rollout 21's correction, then finding a genuinely separate bug"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.25,0.18",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    subgraph cluster_rollout21 {
+        label="Already established (rollout 21,\nbackground_review_subsystem_deep_dive)";
+        style="dashed"; color="#bc8cff"; fontcolor="#bc8cff";
+        r21_a [label="The review fork is CANCELLED by\nthe next live turn, not the reverse\n(cancel_background_review_for_live_turn\nruns first thing in every live turn)", color="#bc8cff", fillcolor="#161b22"];
+        r21_b [label="Flagged as NOT traced:\nagent/review_idle_queue.py\n(the defer/managed-local gating logic)", color="#d29922", fillcolor="#1f2937"];
+    }
+
+    subgraph cluster_this_session {
+        label="This session's follow-up";
+        style="dashed"; color="#39c5cf"; fontcolor="#39c5cf";
+        gap_closed [label="Closed rollout 21's flagged gap:\nreview_targets_managed_local() only\nrecognizes Hermes's OWN supervised\nllama-server — reads False for a\nplain Ollama daemon", color="#39c5cf", fillcolor="#0d2e2e"];
+        separate_bug [label="Found a SEPARATE bug, orthogonal\nto the nudge/review mechanism:\nself._last_turn_interrupted collapses\ngenuine Ctrl+C and SYSTEM-issued\naborts (watchdog / lease / timeout)\ninto one boolean", color="#f0883e", fillcolor="#161b22", penwidth=3];
+        data_existed [label="turn.result['turn_exit_reason']\nalready carried the distinguishing\nissuer slug — just never read by\nthe goal-continuation hook", color="#f85149", fillcolor="#161b22"];
+    }
+
+    verdict [label="Two independent fixes, not one:\n(1) classify+retry the interrupt itself\n(2) close review_idle_queue's Ollama gap\nso the watchdog trips less often", shape=oval, color="#3fb950", fillcolor="#12351f", penwidth=3];
+
+    r21_a -> r21_b;
+    r21_b -> gap_closed [label="  read the flagged file", color="#39c5cf"];
+    r21_b -> separate_bug [style=dashed, color="#f0883e", label="  while investigating\n  the same symptom"];
+    separate_bug -> data_existed;
+    gap_closed -> verdict [color="#3fb950"];
+    data_existed -> verdict [color="#3fb950"];
+}

@@ -1,0 +1,37 @@
+digraph single_query_mode_gap {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Why '/goal ...' via hermes chat -q was a silent no-op"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.25,0.18",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    subgraph cluster_interactive {
+        label="Interactive TUI / chat REPL"; style="dashed"; color="#3fb950"; fontcolor="#3fb950";
+        user_types [label="user types '/goal fix the bug'", color="#58a6ff", fillcolor="#13294d"];
+        process_command [label="HermesCLI.process_command()\ncli.py:3241 — the ONE shared\nslash-command router", color="#3fb950", fillcolor="#1f2937"];
+        handle_goal [label="_handle_goal_command()\n(found dynamically by name)", color="#3fb950", fillcolor="#1f2937"];
+        dispatch [label="dispatch_goal_command()\ngoal_command.py — parses,\nmutates GoalState", color="#3fb950", fillcolor="#1f2937"];
+        pending [label="self._pending_input.put(prompt)", color="#3fb950", fillcolor="#1f2937"];
+        repl_loop [label="REPL's own polling loop\n(cli.py ~3529-3556) drains it\nand runs the turn", color="#3fb950", fillcolor="#1f2937"];
+        judge_ok [label="judge fires every turn ✓", shape=oval, color="#3fb950", fillcolor="#12351f", penwidth=3];
+    }
+
+    subgraph cluster_automation {
+        label="Single-query automation mode\n(-q / -Q / --format stream-json / --oneshot / non-TTY)";
+        style="dashed"; color="#f85149"; fontcolor="#f85149";
+        query_text [label="query = '/goal fix the bug'", color="#f0883e", fillcolor="#161b22"];
+        quiet_entry [label="_run_quiet_single_query() /\n_run_single_query_mode()\ncli.py", color="#f85149", fillcolor="#161b22"];
+        raw_call [label="cli.agent.run_conversation(\n  user_message=effective_query)\n— NO slash-command interception\nat all", color="#f85149", fillcolor="#161b22", penwidth=3];
+        literal [label="model receives the literal text\n'/goal fix the bug' as a chat\nmessage and just... does the task", color="#f85149", fillcolor="#161b22"];
+        no_judge [label="zero goal_judge log lines.\nNo error. Looks like success\nif the model finishes in 1 turn.", shape=oval, color="#f85149", fillcolor="#1f2937", penwidth=3];
+    }
+
+    kanban_note [label="The ONE existing single-query goal\nloop (_run_kanban_goal_loop_q) is\ngated on HERMES_KANBAN_GOAL_MODE=1,\nnot on the query text — and bypasses\nGoalManager/GoalState entirely.", shape=note, fontcolor="#d29922", color="#d29922"];
+
+    user_types -> process_command -> handle_goal -> dispatch -> pending -> repl_loop -> judge_ok;
+    query_text -> quiet_entry -> raw_call -> literal -> no_judge;
+    quiet_entry -> kanban_note [style=dotted, color="#d29922"];
+}

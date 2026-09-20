@@ -1,0 +1,30 @@
+digraph open_items_and_followups {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="What was deliberately left alone, and genuine follow-ups"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.25,0.18",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    subgraph cluster_deliberate {
+        label="Deliberately left as-is"; style="dashed"; color="#3fb950"; fontcolor="#3fb950";
+        loop_simpler [label="/loop's sibling hook gets ONLY the\nclassification gate, not the retry\nplumbing — its own wakeup-interval\nmechanism already retries naturally", color="#3fb950", fillcolor="#1f2937"];
+        no_pr [label="No PR opened upstream\n(out of scope; a different, unrelated\nPR #93521 already exists on\nadjacent code)", color="#3fb950", fillcolor="#1f2937"];
+        gates_untouched [label="/goal gate, contract, wait-barrier\nlogic untouched — not implicated\nin either bug", color="#3fb950", fillcolor="#1f2937"];
+    }
+
+    subgraph cluster_followups {
+        label="Genuine open follow-ups"; style="dashed"; color="#d29922"; fontcolor="#d29922";
+        telemetry [label="No new /goal status counter for\nconsecutive_system_aborts visibility\n(state is tracked + persisted,\njust not surfaced in the status line)", color="#d29922", fillcolor="#1f2937"];
+        threshold [label="DEFAULT_MAX_CONSECUTIVE_SYSTEM_ABORTS=3\nis a judgment call, not measured\nagainst a real distribution of\nwatchdog-trip counts", color="#d29922", fillcolor="#1f2937"];
+        remote_review [label="review_shares_endpoint_with_live_turn\nonly compares netloc — a review\nrouted to a DIFFERENT local port\non the same host still contends\nfor the GPU but isn't detected", color="#f0883e", fillcolor="#161b22"];
+        loop_state_check [label="hermes_cli.loops.LoopState.status\nattribute checked directly, not via\na manager method — worth re-verifying\nagainst upstream if loops.py's\ninternal shape changes", color="#d29922", fillcolor="#1f2937"];
+    }
+
+    scope [label="Everything in this addendum was\nverified against real source and/or\na live run this session — nothing\nhere is speculative", shape=oval, color="#58a6ff", fillcolor="#13294d", penwidth=3];
+
+    loop_simpler -> no_pr -> gates_untouched -> scope [style=invis];
+    telemetry -> threshold -> remote_review -> loop_state_check -> scope [style=invis];
+}

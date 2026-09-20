@@ -1,0 +1,27 @@
+digraph fork_and_publish_pathway {
+    graph [bgcolor="#0d1117", rankdir=LR, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="From local patch to a public, reviewable diff"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.25,0.18",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    local [label="~/.hermes/hermes-agent\nreal local clone, tracking\nNousResearch/hermes-agent:main", color="#58a6ff", fillcolor="#13294d"];
+    commits [label="2 local commits\ndf8033a30, a1f29983e\n(exactly 2 ahead of origin/main)", color="#f0883e", fillcolor="#161b22"];
+    fork [label="gh repo fork NousResearch/hermes-agent\n--default-branch-only --clone=false\n(server-side, instant)", color="#39c5cf", fillcolor="#0d2e2e"];
+    remote [label="git remote add fork\nhttps://github.com/danindiana/\nhermes-agent.git\n(origin stays = upstream, untouched)", color="#39c5cf", fillcolor="#0d2e2e"];
+    push [label="git push fork main:\nfix/goal-single-query-and-\nsystem-abort-retry", color="#3fb950", fillcolor="#1f2937"];
+    branch [label="public branch, exactly the\n2 commits on top of upstream main\nNO PR opened (out of scope)", shape=oval, color="#3fb950", fillcolor="#12351f", penwidth=3];
+
+    writeup [label="this addendum\n(hermes-goal-loop-deferral repo)", color="#bc8cff", fillcolor="#161b22"];
+    link [label="README links the branch/\ncompare URL as the real diff", color="#bc8cff", fillcolor="#161b22"];
+
+    local -> commits -> fork -> remote -> push -> branch;
+    branch -> link [style=dashed, color="#bc8cff"];
+    writeup -> link [style=dashed, color="#bc8cff"];
+
+    note [label="Note: no force-push, no history\nrewrite, upstream main never touched.\nA prior session found an unrelated\nopen upstream PR (#93521) on\nadjacent code — no competing PR here.", shape=note, fontcolor="#d29922", color="#d29922"];
+    push -> note [style=dotted, dir=none, color="#d29922"];
+}

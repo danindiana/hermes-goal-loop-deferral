@@ -1,0 +1,29 @@
+digraph commit_and_test_map {
+    graph [bgcolor="#0d1117", rankdir=LR, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Two commits, files touched, tests added"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.25,0.18",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    subgraph cluster_c1 {
+        label="df8033a30 — cli: make /goal run in -q/-Q"; style="dashed"; color="#f0883e"; fontcolor="#f0883e";
+        c1_files [label="cli.py\nhermes_cli/goals.py\n(run_cli_goal_loop, __all__)", color="#f0883e", fillcolor="#161b22"];
+        c1_tests [label="tests/hermes_cli/\ntest_cli_goal_single_query.py\n16 tests", color="#39c5cf", fillcolor="#0d2e2e"];
+    }
+
+    subgraph cluster_c2 {
+        label="a1f29983e — goals: don't misattribute\nsystem aborts to Ctrl+C"; style="dashed"; color="#58a6ff"; fontcolor="#58a6ff";
+        c2_files [label="hermes_cli/goals.py\n(classify_interrupt_reason,\nnote_system_abort, consecutive_\nsystem_aborts)\nhermes_cli/cli_loops_mixin.py\nhermes_cli/cli_commands_mixin.py\nrun_agent.py\nagent/review_idle_queue.py", color="#58a6ff", fillcolor="#0d3a6b"];
+        c2_tests [label="tests/hermes_cli/\ntest_cli_goal_interrupt.py (+3)\ntest_goals.py (+7 cases)\ntests/agent/\ntest_review_goal_gate.py\n14 tests", color="#39c5cf", fillcolor="#0d2e2e"];
+    }
+
+    regression [label="Full regression pass:\n205 + 169 existing tests,\nzero failures", shape=oval, color="#3fb950", fillcolor="#12351f", penwidth=3];
+
+    c1_files -> c1_tests;
+    c2_files -> c2_tests;
+    c1_tests -> regression [color="#3fb950"];
+    c2_tests -> regression [color="#3fb950"];
+}

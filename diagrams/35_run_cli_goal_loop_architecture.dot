@@ -1,0 +1,40 @@
+digraph run_cli_goal_loop_architecture {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Three loop drivers, one shared engine — run_cli_goal_loop picks the right one"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.25,0.18",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    engine [label="GoalManager.evaluate_after_turn() /\nnext_continuation_prompt()\n\ngates + contract + wait-barrier +\nbudget + pause — the ONE real engine", shape=box3d, color="#58a6ff", fillcolor="#0d3a6b", penwidth=3];
+
+    subgraph cluster_tui {
+        label="TUI hook (existing)"; style="dashed"; color="#3fb950"; fontcolor="#3fb950";
+        tui [label="_maybe_continue_goal_after_turn()\none call per completed REPL turn", color="#3fb950", fillcolor="#1f2937"];
+    }
+    subgraph cluster_gateway {
+        label="Gateway hook (existing)"; style="dashed"; color="#39c5cf"; fontcolor="#39c5cf";
+        gw [label="_post_turn_goal_continuation()\nasync — enqueues onto a FIFO the\nlong-lived event loop drains later", color="#39c5cf", fillcolor="#0d2e2e"];
+    }
+    subgraph cluster_kanban {
+        label="Kanban loop (existing, DELIBERATELY NOT reused)"; style="dashed"; color="#d29922"; fontcolor="#d29922";
+        kanban [label="run_kanban_goal_loop()\nbare judge_goal() call —\nbypasses GoalManager/GoalState\nentirely; board-tool prompts", color="#d29922", fillcolor="#1f2937"];
+        kanban_bypass [label="NO gates, NO pause/resume,\nNO wait-barrier, NO contract", color="#f85149", fillcolor="#161b22"];
+    }
+    subgraph cluster_new {
+        label="NEW: run_cli_goal_loop (this fix)"; style="dashed"; color="#f0883e"; fontcolor="#f0883e";
+        new [label="synchronous while-loop\n(shape borrowed from Kanban's loop)\ndriving the REAL engine\n(substance borrowed from the gateway hook)", color="#f0883e", fillcolor="#161b22", penwidth=3];
+        new_use [label="used by cli._run_cli_goal_command_q\nin -q / -Q single-query mode", color="#f0883e", fillcolor="#161b22"];
+    }
+
+    engine -> tui [dir=back, color="#3fb950"];
+    engine -> gw [dir=back, color="#39c5cf"];
+    kanban -> kanban_bypass [color="#f85149"];
+    engine -> new [dir=back, color="#f0883e", penwidth=3];
+    new -> new_use;
+
+    note [label="Same engine, three shapes:\nTUI = 1 call/turn (external loop drives it)\nGateway = async FIFO re-entry\nCLI (new) = self-contained sync loop\n(a one-shot process must exit when done)", shape=note, fontcolor="#adbac7", color="#8b949e"];
+    engine -> note [style=dotted, dir=none, color="#8b949e"];
+}

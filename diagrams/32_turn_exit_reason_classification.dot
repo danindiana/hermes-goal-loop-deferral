@@ -1,0 +1,31 @@
+digraph turn_exit_reason_classification {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="classify_interrupt_reason(turn_exit_reason) -> (is_system_issued, issuer)"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.25,0.18",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    input [label="turn_exit_reason string\n(from self._last_turn_result,\nalready frozen before hooks run)", shape=oval, color="#58a6ff", fillcolor="#13294d"];
+
+    re [label="regex: ^interrupted_(by_system|during_api_call)\\((.+)\\)$", shape=diamond, color="#d29922", fillcolor="#1f2937"];
+
+    matched [label="Matched — has a parenthetical issuer", color="#f0883e", fillcolor="#161b22"];
+    system [label="(True, issuer)\ne.g. 'turn_liveness_watchdog'\n'session_lease_lost'", color="#f85149", fillcolor="#161b22", penwidth=3];
+
+    unmatched [label="No match", color="#3fb950", fillcolor="#1f2937"];
+    examples [label="'interrupted_by_user'\nplain 'interrupted_during_api_call'\n'' (empty)\nunrecognized shape", fontcolor="#adbac7", shape=note];
+    user [label="(False, None)\nsafe default — keeps the\nexisting auto-pause path", color="#3fb950", fillcolor="#12351f", penwidth=3];
+
+    why [label="Why string-based, not agent.interrupt_control.interrupt_issuer()?\nBy hook time, agent.clear_interrupt() already ran —\nturn_exit_reason is the only surviving record.", shape=note, fontcolor="#39c5cf", color="#39c5cf"];
+
+    input -> re;
+    re -> matched [label="yes", color="#f0883e"];
+    matched -> system;
+    re -> unmatched [label="no", color="#3fb950"];
+    unmatched -> examples [style=dashed, color="#8b949e"];
+    unmatched -> user;
+    re -> why [style=dotted, color="#39c5cf", dir=none];
+}

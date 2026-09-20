@@ -1,0 +1,38 @@
+digraph fix_vs_diagnosis_repo_relationship {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="This addendum extends the diagnosis — it doesn't replace it"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.25,0.18",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    subgraph cluster_original {
+        label="Diagrams 01-30 (original, unchanged)";
+        style="rounded"; color="#bc8cff"; fontcolor="#bc8cff";
+        symptom [label="The symptom +\njudge-is-fine finding", color="#bc8cff", fillcolor="#161b22"];
+        four_causes [label="Four silent deferral paths\n(cause #3's prose is superseded\nby diagram 31, kept as historical\nrecord — see docs/why_this_repo_exists.md)", color="#bc8cff", fillcolor="#161b22"];
+        rollouts [label="15/15 rollouts complete\n(2 real corrections found)", color="#bc8cff", fillcolor="#161b22"];
+    }
+
+    subgraph cluster_addendum {
+        label="Diagrams 31-42 (this addendum)";
+        style="rounded"; color="#f0883e"; fontcolor="#f0883e";
+        correction [label="31: the corrected mechanism", color="#f0883e", fillcolor="#161b22"];
+        fix1 [label="32-35: fix #1\n(-q/-Q single-query no-op)", color="#f0883e", fillcolor="#161b22"];
+        fix2 [label="33, 36-37: fix #2\n(system-abort misattribution)", color="#f0883e", fillcolor="#161b22"];
+        proof [label="38-39: live verification\n+ commit/test map", color="#f0883e", fillcolor="#161b22"];
+        meta [label="40-42: this diagram,\nfork/publish pathway,\nopen items", color="#f0883e", fillcolor="#161b22"];
+    }
+
+    outcome [label="Diagnosis (why) + Fix (what changed) +\nProof (it actually works now),\nall in one place, honestly dated", shape=oval, color="#3fb950", fillcolor="#12351f", penwidth=3];
+
+    symptom -> four_causes -> rollouts;
+    rollouts -> correction [color="#f0883e", label="  builds on rollout 21,\n  closes its flagged gap", fontcolor="#8b949e"];
+    correction -> fix1;
+    correction -> fix2;
+    fix1 -> proof;
+    fix2 -> proof;
+    proof -> meta -> outcome;
+}

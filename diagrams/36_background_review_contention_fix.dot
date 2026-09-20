@@ -1,0 +1,32 @@
+digraph background_review_contention_fix {
+    graph [bgcolor="#0d1117", rankdir=LR, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Why the old managed-local check missed Ollama, and what closes the gap"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.25,0.18",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    subgraph cluster_before {
+        label="Before"; style="dashed"; color="#f85149"; fontcolor="#f85149";
+        review_fires [label="review_targets_managed_local()\nonly recognizes the llama-server\nHermes itself launches/supervises", color="#f0883e", fillcolor="#161b22"];
+        ollama [label="This box: a PLAIN Ollama daemon\n— not 'managed' by Hermes's own\nsupervisor state file", color="#f85149", fillcolor="#161b22"];
+        false_result [label="review_targets_managed_local()\nreads False", color="#f85149", fillcolor="#161b22"];
+        immediate [label="review fork spawns IMMEDIATELY,\nevery time — no deferral at all", color="#f85149", fillcolor="#161b22", penwidth=3];
+        contend [label="review fork and the live goal-loop\nturn decode on the SAME GPU\nat the same time", color="#f85149", fillcolor="#161b22"];
+        watchdog [label="turn-liveness watchdog trips\non the live turn -> system abort", color="#f85149", fillcolor="#161b22", penwidth=3];
+    }
+
+    subgraph cluster_after {
+        label="After"; style="dashed"; color="#3fb950"; fontcolor="#3fb950";
+        shares [label="review_shares_endpoint_with_live_turn()\ncompares the review's resolved\nbase_url netloc to the live agent's own\n(_current_main_runtime) — local-host only", color="#39c5cf", fillcolor="#0d2e2e"];
+        default_fallback [label="by default, review runtime IS the\nparent's own runtime\n(_resolve_review_runtime's fallback)\n— so this reduces to 'is the\nlive model itself local'", color="#39c5cf", fillcolor="#0d2e2e"];
+        goal_active [label="_goal_or_loop_active(agent)\nchecks load_goal()/load_loop()\nfor this session_id", color="#3fb950", fillcolor="#1f2937"];
+        defer [label="_review_should_defer() returns True\n— independent of defer_mode —\nreview spawn defers", color="#3fb950", fillcolor="#12351f", penwidth=3];
+        no_contention [label="live turn decodes uncontended", shape=oval, color="#3fb950", fillcolor="#12351f", penwidth=3];
+    }
+
+    review_fires -> ollama -> false_result -> immediate -> contend -> watchdog;
+    shares -> default_fallback -> goal_active -> defer -> no_contention;
+}

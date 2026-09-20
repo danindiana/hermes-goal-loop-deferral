@@ -1,0 +1,32 @@
+digraph before_after_timeline {
+    graph [bgcolor="#0d1117", rankdir=TB, fontname="Helvetica",
+           fontcolor="#e6edf3", labelloc="t", fontsize=20,
+           label="Same event, two outcomes (illustrative reconstruction from source-verified turn_exit_reason formats)"];
+    node  [fontname="Helvetica", fontcolor="#e6edf3", color="#30363d",
+           style="filled,rounded", shape=box, penwidth=2, margin="0.25,0.18",
+           fillcolor="#161b22"];
+    edge  [color="#8b949e", fontname="Helvetica", fontcolor="#adbac7",
+           penwidth=1.6, arrowsize=0.9];
+
+    subgraph cluster_before {
+        label="Before this fix"; style="dashed"; color="#f85149"; fontcolor="#f85149";
+        b1 [label="t0: goal continuation turn running,\nreview fork contending for GPU", color="#adbac7", fillcolor="#161b22"];
+        b2 [label="t1: turn-liveness watchdog fires\nturn_exit_reason=\n'interrupted_by_system(turn_liveness_watchdog)'", color="#f0883e", fillcolor="#161b22"];
+        b3 [label="t1: _last_turn_interrupted = True\n(collapsed — same as Ctrl+C)", color="#f85149", fillcolor="#161b22"];
+        b4 [label="t1: mgr.pause('user-interrupted (Ctrl+C)')\n⏸ Goal paused — WRONG attribution", color="#f85149", fillcolor="#161b22", penwidth=3];
+        b5 [label="loop stops. Silent unless someone\nnotices the ⏸ line. Looks 'flaky'.", shape=oval, color="#f85149", fillcolor="#1f2937", penwidth=3];
+    }
+
+    subgraph cluster_after {
+        label="After this fix"; style="dashed"; color="#3fb950"; fontcolor="#3fb950";
+        a1 [label="t0: same contention, same watchdog trip", color="#adbac7", fillcolor="#161b22"];
+        a2 [label="t1: same turn_exit_reason string", color="#f0883e", fillcolor="#161b22"];
+        a3 [label="t1: classify_interrupt_reason() ->\n(True, 'turn_liveness_watchdog')", color="#39c5cf", fillcolor="#0d2e2e"];
+        a4 [label="t1: note_system_abort() — retry the\nSAME prompt. ↻ '(1/3)'. No pause.", color="#3fb950", fillcolor="#1f2937"];
+        a5 [label="t2: retried turn completes cleanly\n(review already deferred by fix #2 —\nless likely to contend again)", color="#3fb950", fillcolor="#1f2937"];
+        a6 [label="judge runs, verdict recorded,\nconsecutive_system_aborts resets to 0", shape=oval, color="#3fb950", fillcolor="#12351f", penwidth=3];
+    }
+
+    b1 -> b2 -> b3 -> b4 -> b5;
+    a1 -> a2 -> a3 -> a4 -> a5 -> a6;
+}

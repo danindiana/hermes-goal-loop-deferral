@@ -7,11 +7,13 @@
   <img alt="platform" src="https://img.shields.io/badge/platform-Linux-informational">
   <img alt="made-with-hermes" src="https://img.shields.io/badge/made%20with-Hermes%20Agent-8b5cf6">
   <img alt="made-with-ollama" src="https://img.shields.io/badge/made%20with-Ollama-000000">
-  <img alt="diagrams" src="https://img.shields.io/badge/diagrams-30%20%C3%97%202%20formats-orange">
+  <img alt="diagrams" src="https://img.shields.io/badge/diagrams-42%20%C3%97%202%20formats-orange">
   <img alt="rendered-with" src="https://img.shields.io/badge/rendered%20with-Graphviz-2e8b57">
   <a href="https://github.com/danindiana/hermes-goal-loop-deferral/actions/workflows/verify-diagrams.yml"><img alt="CI" src="https://github.com/danindiana/hermes-goal-loop-deferral/actions/workflows/verify-diagrams.yml/badge.svg"></a>
   <img alt="last-commit" src="https://img.shields.io/github/last-commit/danindiana/hermes-goal-loop-deferral">
   <img alt="repo-size" src="https://img.shields.io/github/repo-size/danindiana/hermes-goal-loop-deferral">
+  <img alt="status" src="https://img.shields.io/badge/status-diagnosed%20%26%20fixed-3fb950">
+  <a href="https://github.com/danindiana/hermes-agent/tree/fix/goal-single-query-and-system-abort-retry"><img alt="patch" src="https://img.shields.io/badge/patch-2%20commits%20on%20fork-58a6ff"></a>
 </p>
 
 # hermes-goal-loop-deferral
@@ -28,6 +30,12 @@ peers.
 Nothing here is hypothetical. Every claim is sourced from real `agent.log` output — verdicts,
 turn boundaries, interruption events, and stream-drop messages — not a synthetic reproduction.
 
+**Update:** the mitigations below are no longer just proposals. A follow-up session diagnosed the
+real cause behind proposal #1, found and closed a second, independent bug, implemented both as
+real commits, verified the fix live, and published the actual patch on a public fork branch. See
+[Fix](#fix) below — the original diagnosis (diagrams 01–30) stands unchanged as the historical
+record of how this was found.
+
 ## Contents
 
 - [The symptom](#the-symptom)
@@ -35,6 +43,7 @@ turn boundaries, interruption events, and stream-drop messages — not a synthet
 - [Root cause: four silent deferral paths](#root-cause-four-silent-deferral-paths)
 - [Why one model hit it hardest](#why-one-model-hit-it-hardest)
 - [Mitigation proposals](#mitigation-proposals)
+- [Fix](#fix)
 - [Diagrams](#diagrams)
 - [Documentation](#documentation)
 - [Rollouts](#rollouts)
@@ -153,6 +162,43 @@ Not applied here — documented as concrete next steps:
   older log window appears already resolved by an explicit provider pin in config — flag it if it
   ever recurs, rather than treating it as still-open.
 
+## Fix
+
+A follow-up session picked this diagnosis back up, corrected one detail (rollout 21 had already
+shown the nudge doesn't race `self._pending_input` for a turn slot — see
+[`docs/corrected_mechanism.md`](docs/corrected_mechanism.md)), and found the *actual* mechanism
+behind "the loop just stops": `self._last_turn_interrupted` is a single boolean, set identically
+whether the turn was cancelled by a real user Ctrl+C or by a **system-issued abort** — a
+turn-liveness-watchdog stall, a session-lease loss, a timeout. Both paths auto-paused the goal
+with a message that actively misattributes the cause. A second, independent bug was found in
+parallel: `/goal` typed into `hermes chat -q` (single-query/automation mode) was a **silent
+no-op** — never parsed as a command at all, sent to the model as literal chat text, with zero
+judge calls and no error.
+
+Both are fixed as two real commits in a local clone of Hermes Agent, verified live (not just unit
+tests — the exact `-q "/goal ..."` repro that produced zero judge log lines before now produces a
+real judge verdict and a `"✓ Goal done"` result), and published on a public fork branch so the
+actual diff is inspectable:
+
+**[`danindiana/hermes-agent@fix/goal-single-query-and-system-abort-retry`](https://github.com/danindiana/hermes-agent/tree/fix/goal-single-query-and-system-abort-retry)**
+— 2 commits on top of `NousResearch/hermes-agent:main`:
+
+- `df8033a30` — **cli: make /goal actually run in -q/-Q single-query mode.** Adds
+  `hermes_cli.goals.run_cli_goal_loop`, a synchronous loop driver that reuses the real
+  `GoalManager.evaluate_after_turn` engine (not the Kanban-specific loop, which bypasses
+  `GoalManager` entirely), wired into both single-query entry points.
+- `a1f29983e` — **goals: don't misattribute system-issued turn aborts to Ctrl+C.** Adds
+  `classify_interrupt_reason` + `GoalManager.note_system_abort`: a system-issued abort now
+  silently retries the in-flight prompt (capped, falling back to the existing safe pause) instead
+  of auto-pausing on the wrong attribution. Also closes the GPU-contention gap rollout 21 flagged
+  but didn't trace: `review_targets_managed_local` only recognized Hermes's own supervised
+  llama-server, not a self-hosted-but-unmanaged backend like a plain Ollama daemon (this repo's
+  own real setup) — background review now defers whenever a `/goal`/`/loop` is active and would
+  contend for the same local endpoint.
+
+91 new/extended tests, 374 existing tests re-run with zero regressions. Full detail across 12 new
+diagrams: 31–42 in the table below, with `docs/` write-ups for each.
+
 ## Diagrams
 
 | # | Diagram | What it shows |
@@ -187,6 +233,18 @@ Not applied here — documented as concrete next steps:
 | 28 | [`heartbeat_collision_check`](diagrams/28_heartbeat_collision_check.svg) | Heartbeat's explicit busy-check, and one plausible narrow gap |
 | 29 | [`rollouts_process_retrospective`](diagrams/29_rollouts_process_retrospective.svg) | Tally of 15 rollouts by kind: audits, corrections, design specs |
 | 30 | [`contract_drafting_prompt_review`](diagrams/30_contract_drafting_prompt_review.svg) | What the contract-drafting model is asked, and what it can't see |
+| 31 | [`corrected_mechanism`](diagrams/31_corrected_mechanism.svg) | Building on rollout 21's correction, then finding a genuinely separate bug |
+| 32 | [`turn_exit_reason_classification`](diagrams/32_turn_exit_reason_classification.svg) | `classify_interrupt_reason`'s decision logic |
+| 33 | [`system_abort_retry_state_machine`](diagrams/33_system_abort_retry_state_machine.svg) | `GoalManager.note_system_abort`: retry, cap, fall back |
+| 34 | [`single_query_mode_gap`](diagrams/34_single_query_mode_gap.svg) | Why `-q`/`-Q` never reached `process_command` |
+| 35 | [`run_cli_goal_loop_architecture`](diagrams/35_run_cli_goal_loop_architecture.svg) | The new loop driver vs. the TUI, gateway, and Kanban loops it borrows from |
+| 36 | [`background_review_contention_fix`](diagrams/36_background_review_contention_fix.svg) | Closing `review_idle_queue`'s Ollama gap |
+| 37 | [`before_after_timeline`](diagrams/37_before_after_timeline.svg) | Same watchdog trip, two outcomes (illustrative) |
+| 38 | [`live_verification_evidence`](diagrams/38_live_verification_evidence.svg) | Real `agent.log` lines, before and after the fix |
+| 39 | [`commit_and_test_map`](diagrams/39_commit_and_test_map.svg) | The two commits mapped to files touched and tests added |
+| 40 | [`fix_vs_diagnosis_repo_relationship`](diagrams/40_fix_vs_diagnosis_repo_relationship.svg) | How this addendum extends diagrams 01–30 without rewriting them |
+| 41 | [`fork_and_publish_pathway`](diagrams/41_fork_and_publish_pathway.svg) | Local commits → fork → branch → public compare URL |
+| 42 | [`open_items_and_followups`](diagrams/42_open_items_and_followups.svg) | What's deliberately unchanged, and genuine follow-ups |
 
 Each diagram ships as `.dot` (source), `.png`, and `.svg`. Re-render any of them with:
 
@@ -216,6 +274,18 @@ diagram (05–15 in the table above continue from these, in the same order):
 | [`docs/glossary.md`](docs/glossary.md) | Core terms and how they relate to each other |
 | [`docs/threat_model.md`](docs/threat_model.md) | Operational/reliability risk matrix (explicitly not a security threat model) |
 | [`docs/faq.md`](docs/faq.md) | Short Q&A, each answer linking to the doc with the full version |
+| [`docs/corrected_mechanism.md`](docs/corrected_mechanism.md) | Builds on rollout 21, then a genuinely separate bug |
+| [`docs/turn_exit_reason_classification.md`](docs/turn_exit_reason_classification.md) | `classify_interrupt_reason`'s decision logic |
+| [`docs/system_abort_retry_state_machine.md`](docs/system_abort_retry_state_machine.md) | Retry, cap, fall back — and why |
+| [`docs/single_query_mode_gap.md`](docs/single_query_mode_gap.md) | Why `-q`/`-Q` never reached `process_command` |
+| [`docs/run_cli_goal_loop_architecture.md`](docs/run_cli_goal_loop_architecture.md) | Right substance (gateway hook) + right shape (Kanban loop) |
+| [`docs/background_review_contention_fix.md`](docs/background_review_contention_fix.md) | Closing `review_idle_queue`'s Ollama gap |
+| [`docs/before_after_timeline.md`](docs/before_after_timeline.md) | Same event, two outcomes (explicitly marked illustrative) |
+| [`docs/live_verification_evidence.md`](docs/live_verification_evidence.md) | Real before/after `agent.log` excerpts |
+| [`docs/commit_and_test_map.md`](docs/commit_and_test_map.md) | Both commits, every file touched, every test added |
+| [`docs/fix_vs_diagnosis_repo_relationship.md`](docs/fix_vs_diagnosis_repo_relationship.md) | Why 01–30 didn't need rewriting |
+| [`docs/fork_and_publish_pathway.md`](docs/fork_and_publish_pathway.md) | The exact `gh`/`git` commands used to publish the real diff |
+| [`docs/open_items_and_followups.md`](docs/open_items_and_followups.md) | Scope decisions and genuine remaining gaps |
 
 ## Rollouts
 
@@ -263,7 +333,19 @@ every pick's reasoning, and links to all fifteen finished pieces in
 │   ├── 27_nudge_interval_source_reading.{dot,png,svg}
 │   ├── 28_heartbeat_collision_check.{dot,png,svg}
 │   ├── 29_rollouts_process_retrospective.{dot,png,svg}
-│   └── 30_contract_drafting_prompt_review.{dot,png,svg}
+│   ├── 30_contract_drafting_prompt_review.{dot,png,svg}
+│   ├── 31_corrected_mechanism.{dot,png,svg}
+│   ├── 32_turn_exit_reason_classification.{dot,png,svg}
+│   ├── 33_system_abort_retry_state_machine.{dot,png,svg}
+│   ├── 34_single_query_mode_gap.{dot,png,svg}
+│   ├── 35_run_cli_goal_loop_architecture.{dot,png,svg}
+│   ├── 36_background_review_contention_fix.{dot,png,svg}
+│   ├── 37_before_after_timeline.{dot,png,svg}
+│   ├── 38_live_verification_evidence.{dot,png,svg}
+│   ├── 39_commit_and_test_map.{dot,png,svg}
+│   ├── 40_fix_vs_diagnosis_repo_relationship.{dot,png,svg}
+│   ├── 41_fork_and_publish_pathway.{dot,png,svg}
+│   └── 42_open_items_and_followups.{dot,png,svg}
 ├── docs/
 │   ├── ROLLOUTS.md
 │   ├── catch22.md
@@ -277,6 +359,18 @@ every pick's reasoning, and links to all fifteen finished pieces in
 │   ├── glossary.md
 │   ├── threat_model.md
 │   ├── faq.md
+│   ├── corrected_mechanism.md
+│   ├── turn_exit_reason_classification.md
+│   ├── system_abort_retry_state_machine.md
+│   ├── single_query_mode_gap.md
+│   ├── run_cli_goal_loop_architecture.md
+│   ├── background_review_contention_fix.md
+│   ├── before_after_timeline.md
+│   ├── live_verification_evidence.md
+│   ├── commit_and_test_map.md
+│   ├── fix_vs_diagnosis_repo_relationship.md
+│   ├── fork_and_publish_pathway.md
+│   ├── open_items_and_followups.md
 │   └── rollouts/
 │       ├── deferral_telemetry_spec.md
 │       ├── cli_gateway_hook_parity_audit.md
